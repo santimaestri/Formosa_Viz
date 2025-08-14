@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Index — Visualizaciones Formosa (D3)</title>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <style>
+    :root{
+      --clarin-red:#E10000;
+      --ink:#111827; --ink-inv:#ffffff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font:16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
+      color:var(--ink-inv);
+      background:#000;
+      background-image:url('https://www.clarin.com/img/2025/07/23/ppysLASu9_1256x620__1.jpg');
+      background-size:cover; background-position:center; background-repeat:no-repeat;
+    }
+    .backdrop{position:fixed; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.75));}
+    .wrap{position:relative; max-width:1100px; margin:32px auto; padding:20px}
+    header{margin-bottom:18px}
+    h1{margin:0 0 6px; font-size:28px; font-weight:800; letter-spacing:.2px}
+    .sub{opacity:.9; margin:0 0 16px}
+    .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:14px}
+    .card{position:relative; border-radius:16px; padding:16px 16px 14px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); color:#fff; text-decoration:none; overflow:hidden}
+    .card:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    .card h3{margin:0 0 6px; font-size:18px}
+    .card p{margin:0; opacity:.9}
+    .badge{display:inline-block; font-size:12px; font-weight:700; padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.35); margin-bottom:10px}
+    .cta{display:inline-flex; align-items:center; gap:8px; margin-top:10px; font-weight:700; color:#fff}
+    .cta svg{width:18px; height:18px}
+    .footer{margin-top:22px; font-size:12px; opacity:.8}
+    .clarin{color:var(--clarin-red)}
+    #u-line{display:block; height:4px; border-radius:999px; background:rgba(255,255,255,.35)}
+    details.tests{margin-top:18px}
+    .pass{color:#22c55e}
+    .fail{color:#ef4444}
+  </style>
+</head>
+<body>
+  <div class="backdrop"></div>
+  <div class="wrap">
+    <header>
+      <h1>Visualizaciones Formosa <span class="clarin">(D3)</span></h1>
+      <p class="sub">Infografías y mapas interactivos.</p>
+      <div id="u-line"></div>
+    </header>
+
+    <main class="grid" id="links"></main>
+
+    <details class="tests"><summary>Autotests</summary><ul id="test-list"></ul></details>
+
+    <p class="footer">Abrí cada visual en una pestaña para cruzarlas.</p>
+  </div>
+
+  <script>
+  (function main(){
+    if (!window.d3) { window.addEventListener('load', main, { once:true }); return; }
+
+    const items = [
+      { title: 'Drogas incautadas — Clorinda', file: 'drogas_incautadas_clorinda.html', blurb: 'Desglose por sustancia y hallazgo.' },
+      { title: 'Mapa — Fuerzas & Incautaciones', file: 'mapa_fuerzas_incautaciones.html', blurb: 'Ubicación y fuerza interviniente.' },
+      { title: 'Aprehendidos — Serie anual (D3)', file: 'visualizacion_aprehendidos_d_3_formosa.html', blurb: 'Barras con evolución 2015–2024.' },
+      { title: 'Cocaína — Serie (D3)', file: 'visualizacion_cocaina_d_3_formosa.html', blurb: 'Tendencia y variación interanual.' },
+      { title: 'Marihuana — Serie (D3)', file: 'visualizacion_marihuana_d_3_formosa.html', blurb: 'Evolución y picos relevantes.' }
+    ];
+
+    const BASE = 'https://santimaestri.github.io/Formosa_Viz/';
+
+    const sel = d3.select('#links').selectAll('a.card').data(items).enter().append('a')
+      .attr('class','card')
+      .attr('href', d => `${BASE}${d.file}`)
+      .attr('target', '_blank')
+      .attr('rel','noopener');
+
+    sel.append('span').attr('class','badge').text('HTML • D3');
+    sel.append('h3').text(d => d.title);
+    sel.append('p').text(d => d.blurb);
+    sel.append('span').attr('class','cta').html(`Abrir
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
+
+    const u = d3.select('#u-line');
+    function animateUnderline(){
+      u.style('background', 'rgba(255,255,255,.2)');
+      const dur = 900;
+      d3.select('#u-line')
+        .transition().duration(dur)
+        .style('background', '#E10000')
+        .transition().duration(600)
+        .style('background', 'rgba(255,255,255,.35)');
+    }
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) animateUnderline(); });
+    animateUnderline();
+
+    (function tests(){
+      const out=[]; const ok=(name)=>out.push({name,ok:true}); const ko=(name,msg)=>out.push({name,ok:false,msg});
+      try{ if(window.d3) ok('d3 cargó'); else ko('d3 cargó','d3 no está definido'); }catch(e){ ko('d3 cargó', e.message); }
+      try{ const n = document.querySelectorAll('a.card').length; if(n===items.length) ok('Se renderizaron todas las tarjetas'); else ko('Render tarjetas', `esperado ${items.length}, got ${n}`);}catch(e){ ko('Render tarjetas', e.message); }
+      try{ const allBlank = [...document.querySelectorAll('a.card')].every(a=>a.getAttribute('target')==='_blank'); if(allBlank) ok('Links abren en nueva pestaña'); else ko('Target _blank','faltan target'); }catch(e){ ko('Target _blank', e.message); }
+      const ul=document.getElementById('test-list'); out.forEach(t=>{ const li=document.createElement('li'); li.textContent=(t.ok?'✓ ':'✗ ')+t.name+(t.ok?'':` — ${t.msg||''}`); li.className=t.ok?'pass':'fail'; ul.appendChild(li); });
+    })();
+  })();
+  </script>
+</body>
+</html>
