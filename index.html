@@ -60,7 +60,6 @@
   (function main(){
     if (!window.d3) { window.addEventListener('load', main, { once:true }); return; }
 
-    const BASE = 'https://github.com/tu-usuario/tu-repo/blob/main/';
     const items = [
       { title: 'Drogas incautadas — Clorinda', file: 'drogas_incautadas_clorinda.html', blurb: 'Desglose por sustancia y hallazgo.' },
       { title: 'Mapa — Fuerzas & Incautaciones', file: 'mapa_fuerzas_incautaciones.html', blurb: 'Ubicación y fuerza interviniente.' },
@@ -68,6 +67,8 @@
       { title: 'Cocaína — Serie (D3)', file: 'visualizacion_cocaina_d_3_formosa.html', blurb: 'Tendencia y variación interanual.' },
       { title: 'Marihuana — Serie (D3)', file: 'visualizacion_marihuana_d_3_formosa.html', blurb: 'Evolución y picos relevantes.' }
     ];
+
+    const BASE = 'https://santimaestri.github.io/Formosa_Viz/';
 
     const sel = d3.select('#links').selectAll('a.card').data(items).enter().append('a')
       .attr('class','card')
