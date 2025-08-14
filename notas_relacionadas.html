@@ -4,10 +4,173 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Investigaciones Internacionales | Estilo Clarín</title>
-  <!-- resto del head igual -->
+
+  <!-- SEO básico -->
+  <meta name="description" content="Selección curada de investigaciones internacionales sobre narcotráfico en Sudamérica, con enlaces a reportajes del Washington Post, OCCRP y archivo de respaldo." />
+  <link rel="canonical" href="https://tusitio.ejemplo/internacional/investigaciones/" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="Investigaciones Internacionales | Estilo Clarín" />
+  <meta property="og:description" content="Narcotráfico y rutas hacia Europa, pistas clandestinas en Paraguay y archivos espejo." />
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content="es_AR" />
+  <meta property="twitter:card" content="summary_large_image" />
+
+  <!-- Tipografías -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* --- Variables y estilos globales --- */
+    :root{
+      --rojo: #d50000;
+      --rojo-osc: #b70000;
+      --negro: #111111;
+      --gris-1:#f5f5f5;
+      --gris-2:#e8e8e8;
+      --maxw: 1120px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#fff;color:var(--negro)}
+    body{font-family:"Source Sans 3",sans-serif;line-height:1.45}
+
+    /* Barra superior */
+    .top-strip{background:var(--rojo);color:#fff;font-size:.92rem;border-bottom:4px solid var(--rojo-osc)}
+    .top-inner{max-width:var(--maxw);margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:.35rem .75rem}
+    .brand{display:flex;align-items:flex-end;gap:.5rem;text-decoration:none;color:#fff}
+    .brand .logo{font-family:"Merriweather",serif;font-weight:900;font-size:1.85rem}
+    .brand .edicion{font-size:.82rem;opacity:.95;border-left:1px solid rgba(255,255,255,.35);padding-left:.5rem}
+
+    /* Navbar */
+    .nav{border-bottom:1px solid var(--gris-2);background:#fff}
+    .nav-inner{max-width:var(--maxw);margin:0 auto;display:flex;gap:1rem;flex-wrap:wrap;padding:.4rem .75rem}
+    .nav a{text-decoration:none;color:var(--negro);font-weight:600;font-size:.95rem;padding:.35rem .25rem;border-bottom:2px solid transparent}
+    .nav a.activa{border-color:var(--rojo);color:var(--rojo)}
+
+    /* Layout principal */
+    .wrap{max-width:var(--maxw);margin:1rem auto;padding:0 .75rem;display:grid;grid-template-columns:3fr 1fr;gap:2rem}
+    @media (max-width:980px){.wrap{grid-template-columns:1fr}}
+
+    /* Breadcrumb */
+    .breadcrumb{font-size:.9rem;color:#666;margin:.75rem 0 1rem 0}
+    .breadcrumb a{color:#666;text-decoration:none}
+
+    /* Hero */
+    .hero{
+      background:linear-gradient(0deg, rgba(0,0,0,.35), rgba(0,0,0,.0)),
+                 url('https://www.occrp.org/processed/containers/assets/features/paraguay-illegal-airstirps/narcotrafficking-airstrips-paraguay.jpg/379ea2849319cf9250959af291b8cc29/narcotrafficking-airstrips-paraguay.jpg') center/cover no-repeat;
+      height:320px;border:1px solid var(--gris-2);border-radius:4px;overflow:hidden;margin:0 0 1rem 0
+    }
+    .hero .epig{background:rgba(255,255,255,.95);display:inline-block;margin:.75rem;border-radius:3px;padding:.35rem .5rem;font-size:.85rem;color:#444;border:1px solid var(--gris-2)}
+
+    /* Cards */
+    .cards{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+    .card{border:1px solid var(--gris-2);border-radius:6px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+    .card-img{background:#ddd;height:160px;background-size:cover;background-position:center}
+    .card-body{padding:.85rem}
+    .card-kicker{font-size:.8rem;color:var(--rojo);font-weight:700;text-transform:uppercase;margin-bottom:.25rem}
+    .card h3{font-family:"Merriweather",serif;font-size:1.1rem;margin:.25rem 0 .35rem 0}
+    .card p{margin:0 0 .75rem 0;color:#333}
+    .card a{text-decoration:none;color:#fff;background:var(--rojo);padding:.45rem .65rem;border-radius:4px;font-weight:700;font-size:.92rem}
+    .card a:hover{background:var(--rojo-osc)}
+
+    /* Sidebar */
+    aside{border-top:4px solid var(--rojo);padding-top:.75rem}
+    .box{background:#fff;border:1px solid var(--gris-2);border-radius:6px;margin-bottom:1rem;overflow:hidden}
+    .box h4{background:var(--gris-1);border-bottom:1px solid var(--gris-2);padding:.6rem .75rem;margin:0;font-weight:800;text-transform:uppercase;font-size:.9rem;color:#444}
+    .box ul{list-style:none;margin:0;padding:.4rem .75rem}
+    .box li{padding:.5rem 0;border-bottom:1px dotted var(--gris-2)}
+    .box li:last-child{border:none}
+    .box a{text-decoration:none;color:var(--negro)}
+    .box a:hover{color:var(--rojo)}
+
+    /* Footer */
+    footer{border-top:1px solid var(--gris-2);margin-top:2rem;padding:1.2rem .75rem;color:#666;font-size:.9rem;text-align:center}
+  </style>
 </head>
 <body>
-  <!-- Contenido reducido para el ejemplo -->
-  <h1>Investigaciones Internacionales</h1>
+
+  <div class="top-strip">
+    <div class="top-inner">
+      <a class="brand" href="#"><span class="logo">Clarín</span><span class="edicion">Internacional</span></a>
+      <div class="top-meta" id="fecha-hoy">Miércoles 14 de agosto de 2025</div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="activa">Investigaciones</a>
+      <a href="#">Política</a>
+      <a href="#">Economía</a>
+      <a href="#">Sociedad</a>
+      <a href="#">Mundo</a>
+      <a href="#">Opinión</a>
+      <a href="#">Deportes</a>
+      <a href="#">Tecnología</a>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <main>
+      <div class="breadcrumb">
+        <a href="#">Inicio</a> › <a href="#">Internacional</a> › Investigaciones
+      </div>
+
+      <article>
+        <div class="kicker">Especial</div>
+        <h1 class="titulo">Rutas, pistas clandestinas y archivos espejo: tres investigaciones clave</h1>
+        <p class="bajada">Del corredor sudamericano hacia Europa a los aeródromos ocultos en Paraguay.</p>
+
+        <figure class="hero" role="img" aria-label="Puerto fluvial con contenedores">
+          <figcaption class="epig">Contenedores en la hidrovía: el nuevo tablero del contrabando de cocaína hacia Europa.</figcaption>
+        </figure>
+
+        <section class="cards">
+          <article class="card">
+            <div class="card-img" style="background-image:url('https://www.infobae.com/resizer/v2/B64QX2PWSRDRDLNVF4OTCIUOAA.jpg?auth=1ecc8908c0e2b746d8289aedb4542f8426c147c324c3ddb2dab048c4548035c0&smart=true&width=992&height=661&quality=85');"></div>
+            <div class="card-body">
+              <div class="card-kicker">Investigación</div>
+              <h3>La ruta sudamericana de la cocaína hacia Europa</h3>
+              <p>Cómo la logística de contenedores reconfiguró el envío hacia Europa.</p>
+              <a href="https://www.washingtonpost.com/world/interactive/2024/south-america-cocaine-route-europe/" target="_blank" rel="noopener">Leer en Washington Post</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-img" style="background-image:url('https://www.occrp.org/processed/containers/assets/features/paraguay-illegal-airstirps/airstrip-paraguay-chaco-above.jpg/d81f799ff2d9377333a68fab17146b6b/airstrip-paraguay-chaco-above.jpg?q=80&w=1400&auto=format&fit=crop');"></div>
+            <div class="card-body">
+              <div class="card-kicker">Exclusivo</div>
+              <h3>Pistas narco ocultas en los bosques de Paraguay</h3>
+              <p>Rastreo satelital que expone aeródromos clandestinos usados por redes narco.</p>
+              <a href="https://www.occrp.org/en/feature/a-search-for-secret-narcotrafficking-airstrips-in-paraguays-wild-forests" target="_blank" rel="noopener">Leer en OCCRP</a>
+            </div>
+          </article>
+        </section>
+      </article>
+    </main>
+
+    <aside>
+      <div class="box">
+        <h4>Documentos</h4>
+        <ul>
+          <li><a href="https://www.washingtonpost.com/world/interactive/2024/south-america-cocaine-route-europe/">Ruta a Europa (WPost)</a></li>
+          <li><a href="https://www.occrp.org/en/feature/a-search-for-secret-narcotrafficking-airstrips-in-paraguays-wild-forests">Pistas en Paraguay (OCCRP)</a></li>
+          <li><a href="https://archive.is/cKupi">Espejo (archive.is)</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    © 2025 | Maquetado editorial inspirado en Clarín (no oficial).
+  </footer>
+
+  <script>
+    try{
+      const el = document.getElementById('fecha-hoy');
+      const f = new Date();
+      const fmt = new Intl.DateTimeFormat('es-AR', {weekday:'long', day:'2-digit', month:'long', year:'numeric'});
+      el.textContent = fmt.format(f).replace(/^./, c=>c.toUpperCase());
+    }catch(e){}
+  </script>
 </body>
 </html>
