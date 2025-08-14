@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Incautaciones de Cocaína — Formosa (2014–2024)</title>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" defer></script>
+  <style>
+    :root{
+      /* Paleta Clarín */
+      --clarin-red:#E10000;
+      --bg:#ffffff; --card:#fafafa; --ink:#222222; --muted:#6b7280; --accent:#E10000;
+      --series-a: var(--clarin-red); /* Federales */
+      --series-b: #616161;           /* Policía Provincial */
+    }
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial}
+    .wrap{max-width:1100px;margin:24px auto;padding:16px}
+    .card{background:linear-gradient(180deg,var(--card),#f1f1f1 120%);border:1px solid #e6e6e6;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.06);padding:18px 18px 8px}
+    h1{font-size:20px;margin:0 0 6px}
+    .sub{color:var(--muted);margin-bottom:16px}
+    .legend{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:6px 0 12px}
+    .key{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+    .swatch{width:14px;height:14px;border-radius:2px;flex:0 0 14px}
+    .key.disabled .swatch{filter:grayscale(1) opacity(.4)}
+    .key.disabled{color:#bbb}
+    .tooltip{position:fixed;pointer-events:none;background:#111827;color:#fff;padding:8px 10px;border-radius:10px;font-size:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transform:translateY(-8px);transition:opacity .15s, transform .15s}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .btn{background:#ffffff;border:1px solid var(--clarin-red);color:var(--clarin-red);border-radius:10px;padding:8px 10px;cursor:pointer;font-weight:600}
+    .btn:hover{background:var(--clarin-red);color:#ffffff}
+    svg{width:100%;height:auto;display:block}
+    .grid line{stroke:#e5e7eb}
+    .axis text{fill:#374151}
+    .axis path, .axis line{stroke:#e5e7eb}
+    details.tests{margin-top:12px}
+    .pass{color:#059669}
+    .fail{color:#dc2626}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>Incautaciones de cocaína (kg) — Formosa</h1>
+    <div class="sub">Fuerzas Federales vs. Policía de la Provincia (2014–2024). Pase el mouse para detalles. Click en la leyenda para ocultar/mostrar series.</div>
+    <div class="legend" id="legend"></div>
+    <svg id="chart" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="controls">
+      <button class="btn" id="resetZoom">Reiniciar zoom</button>
+    </div>
+    <details class="tests" id="tests"><summary>Autotests (clic para ver)</summary><ul id="test-list"></ul></details>
+  </div>
+</div>
+<div class="tooltip" id="tt"></div>
+<script>
+// ---- Helpers ----
+function safeCssVar(name, fallback){
+  try{ const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim(); return v || fallback; }catch(e){ return fallback; }
+}
+function initViz(){
+  if(!window.d3){ window.addEventListener('load', initViz, { once:true }); return; }
+
+  // Datos del informe (kg)
+  const data = [
+    {year:2014, federales:156.39, provincial:0.04},
+    {year:2015, federales:98.58,  provincial:0.61},
+    {year:2016, federales:62.78,  provincial:0.41},
+    {year:2017, federales:5.07,   provincial:0.52},
+    {year:2018, federales:96.36,  provincial:10.52},
+    {year:2019, federales:72.56,  provincial:1.27},
+    {year:2020, federales:283.52, provincial:0.80},
+    {year:2021, federales:23.52,  provincial:6.06},
+    {year:2022, federales:53.58,  provincial:9.46},
+    {year:2023, federales:52.97,  provincial:21.00},
+    {year:2024, federales:94.58,  provincial:17.30}
+  ];
+  window.data = data; // para tests
+
+  const COLORS = {
+    federales: safeCssVar('--series-a', '#E10000'),
+    provincial: safeCssVar('--series-b', '#616161')
+  };
+
+  const locale = d3.formatLocale({ decimal: ",", thousands: ".", grouping: [3] });
+  const fmt = locale.format(",.2f");
+
+  const svg = d3.select('#chart');
+  const W=1000, H=560, m={top:24,right:24,bottom:64,left:80};
+  const innerW=W-m.left-m.right, innerH=H-m.top-m.bottom;
+  const g = svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+
+  const x = d3.scalePoint().domain(data.map(d=>d.year)).range([0,innerW]).padding(0.5);
+  const y = d3.scaleLinear().domain([0, d3.max(data, d=>Math.max(d.federales, d.provincial))*1.1]).nice().range([innerH,0]);
+
+  const gx = g.append('g').attr('class','axis').attr('transform',`translate(0,${innerH})`).call(d3.axisBottom(x).tickFormat(d3.format('d')));
+  g.append('g').attr('class','axis').call(d3.axisLeft(y));
+  g.append('g').attr('class','grid').call(d3.axisLeft(y).tickSize(-innerW).tickFormat(''));
+
+  const line = d3.line().defined(d=>d.value!=null).x(d=>x(d.year)).y(d=>y(d.value)).curve(d3.curveMonotoneX);
+  const series = [
+    {key:'federales', label:'Fuerzas Federales'},
+    {key:'provincial', label:'Policía Provincial'}
+  ];
+
+  const paths={};
+  series.forEach(s=>{
+    const values = data.map(d=>({year:d.year, value:d[s.key]}));
+    paths[s.key] = g.append('path')
+      .attr('fill','none')
+      .style('stroke', COLORS[s.key])
+      .attr('stroke-width',3)
+      .attr('d', line(values));
+  });
+
+  const tt = d3.select('#tt');
+  const dotLayer = g.append('g');
+  series.forEach(s=>{
+    dotLayer.selectAll(`.dot-${s.key}`)
+      .data(data).enter().append('circle')
+      .attr('class',`dot dot-${s.key}`)
+      .attr('r',4)
+      .style('fill', COLORS[s.key])
+      .attr('cx',d=>x(d.year)).attr('cy',d=>y(d[s.key]))
+      .on('mouseenter',(event,d)=>{
+        const val=d[s.key]; if(val==null) return;
+        tt.style('opacity',1).style('transform','translateY(-4px)')
+          .html(`<b>${s.label}</b><br>Año: <b>${d.year}</b><br>Kg: <b>${fmt(val)}</b>`)
+          .style('left',(event.clientX+12)+'px').style('top',(event.clientY-24)+'px');
+      })
+      .on('mousemove',(event)=>{ tt.style('left',(event.clientX+12)+'px').style('top',(event.clientY-24)+'px'); })
+      .on('mouseleave',()=>tt.style('opacity',0).style('transform','translateY(-8px)'));
+  });
+
+  const legend = d3.select('#legend');
+  const state = {federales:true, provincial:true};
+  series.forEach(s=>{
+    const key = legend.append('div').attr('class','key').on('click',()=>{
+      state[s.key]=!state[s.key]; key.classed('disabled',!state[s.key]);
+      const v = state[s.key]?1:0; paths[s.key].style('opacity',v); g.selectAll(`.dot-${s.key}`).style('opacity',v);
+    });
+    key.append('span').attr('class','swatch').style('background',COLORS[s.key]);
+    key.append('span').text(s.label);
+  });
+
+  g.append('text').attr('x',-innerH/2).attr('y',-60).attr('transform','rotate(-90)').attr('fill','#333').attr('text-anchor','middle').text('Kilogramos incautados');
+  g.append('text').attr('x',innerW/2).attr('y',innerH+52).attr('fill','#333').attr('text-anchor','middle').text('Año');
+
+  const zoom = d3.zoom().scaleExtent([1,8]).translateExtent([[0,0],[innerW,innerH]]).on('zoom',(event)=>{
+    const zx = event.transform.rescaleX(x);
+    gx.call(d3.axisBottom(zx).tickFormat(d3.format('d')));
+    series.forEach(s=>{
+      const values = data.map(d=>({year:d.year, value:d[s.key]}));
+      paths[s.key].attr('d', d3.line().defined(d=>d.value!=null).x(d=>zx(d.year)).y(d=>y(d.value)).curve(d3.curveMonotoneX)(values));
+    });
+    dotLayer.selectAll('circle').attr('cx',d=>zx(d.year)).attr('cy',function(d){
+      const cls=this.getAttribute('class'); const key=cls.includes('federales')?'federales':'provincial'; return y(d[key]);
+    });
+  });
+  d3.select('#chart').call(zoom);
+  document.getElementById('resetZoom').addEventListener('click',()=>{
+    d3.select('#chart').transition().duration(400).call(zoom.transform,d3.zoomIdentity);
+  });
+
+  // --- Autotests ---
+  (function runTests(){
+    const tests=[]; function add(name, fn){ try{fn();tests.push({name,ok:true});}catch(e){tests.push({name,ok:false,err:e});} }
+    add('CSS var series-a resuelve o usa fallback', ()=>{ const c=safeCssVar('--series-a','#E10000'); if(!/^#|rgb|hsl/.test(c)) throw new Error('Color inválido '+c); });
+    add('dataset 2014–2024 (11 puntos)', ()=>{ if(data.length!==11) throw new Error('len='+data.length); });
+    add('máximo y > 0', ()=>{ const yMax=d3.max(data,d=>Math.max(d.federales,d.provincial)); if(!(yMax>0)) throw new Error('yMax='+yMax); });
+    add('Dominio X coincide con años', ()=>{ const years=data.map(d=>d.year); if(JSON.stringify(years)!==JSON.stringify(d3.scalePoint().domain(years).range([0,1]).domain())) throw new Error('Dominio distinto'); });
+    add('Se dibujan 2 paths', ()=>{ const ps=document.querySelectorAll('#chart path'); if(ps.length<2) throw new Error('faltan paths'); });
+    const list=document.getElementById('test-list'); tests.forEach(t=>{ const li=document.createElement('li'); li.textContent=(t.ok?'✓ ':'✗ ')+t.name+(t.ok?'':' — '+(t.err&&t.err.message||t.err)); li.className=t.ok?'pass':'fail'; list.appendChild(li); });
+  })();
+}
+
+if(document.readyState==='complete' || document.readyState==='interactive'){
+  setTimeout(initViz, 0);
+}else{
+  document.addEventListener('DOMContentLoaded', initViz, { once:true });
+}
+</script>
+</body>
+</html>
