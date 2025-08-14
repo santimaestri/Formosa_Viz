@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Clarín Database</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Merriweather:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    /* Estilo inspirado en Clarín: rojo protagonista, titulares serif, cuerpo sans */
+    :root{
+      --brand:#c20000;         /* rojo Clarín */
+      --brand-dark:#a80000;
+      --bg:#ffffff;            /* fondo */
+      --fg:#111827;            /* texto principal */
+      --muted:#6b7280;         /* texto secundario */
+      --line:#e5e7eb;          /* bordes */
+      --ok:#059669;            /* verde éxito */
+      --err:#dc2626;           /* rojo error */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--fg);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial}
+    h1,h2,h3{font-family:Merriweather, Georgia, serif; letter-spacing:.2px}
+
+    /* Masthead + Hero de portada */
+    .mast{border-bottom:4px solid var(--brand);background:#fff}
+    .mast-inner{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+    .brand{font-family:Merriweather, Georgia, serif;font-weight:900;font-size:1.6rem;color:var(--brand);line-height:1}
+    .brand small{font-weight:700;font-size:.9rem;color:#9ca3af;margin-left:.35rem}
+
+    header.hero{position:relative;width:100%;min-height:220px; 
+      background:url('https://www.clarin.com/img/2025/07/23/ppysLASu9_1256x620__1.jpg') center/cover no-repeat}
+    header.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,.85))}
+    .hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:28px 16px;display:flex;align-items:flex-end;height:100%}
+    .hero-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;margin:0;color:var(--brand)}
+    .hero-sub{margin:.35rem 0 0;color:#374151;font-size:.98rem}
+
+    /* Contenedor y tarjetas */
+    .wrap{max-width:1100px;margin:16px auto 24px;padding:0 16px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:16px;box-shadow:0 6px 24px rgba(17,24,39,.06)}
+    .row{display:grid;gap:10px}
+    @media(min-width:820px){.row{grid-template-columns:1.2fr 2fr}}
+
+    label{font-size:.86rem;color:#374151;display:block;margin:6px 0 4px}
+    input,select,button{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #d1d5db;background:#fff;color:var(--fg);outline:none}
+    input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(194,0,0,.12)}
+    input::placeholder{color:#9ca3af}
+
+    button{cursor:pointer;border:1px solid var(--brand-dark);background:linear-gradient(180deg,var(--brand),var(--brand-dark));
+      color:#fff;font-weight:700}
+    button.secondary{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+
+    .hint{font-size:.88rem;color:var(--muted)}
+    .status{font-size:.9rem;margin-top:6px}
+    .status.ok{color:var(--ok)} .status.err{color:var(--err)}
+
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}
+    th{font-size:.85rem;color:#374151;font-weight:700;background:#fafafa}
+
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(194,0,0,.08);border:1px solid rgba(194,0,0,.25);font-size:.75rem;color:#7f1d1d}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media(min-width:900px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+    details{background:#fafafa;border:1px solid var(--line);border-radius:12px;padding:10px}
+    footer{margin:24px 0;color:#4b5563;font-size:.9rem}
+    .badge{font-size:.75rem;color:var(--brand)}
+    .sr{position:absolute;left:-10000px}
+  </style>
+</head>
+<body>
+  <header class="mast">
+    <div class="mast-inner">
+      <div class="brand">Database <small>Jurisprudencia</small></div>
+    </div>
+  </header>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div>
+        <h1 class="hero-title">Base de datos de fallos</h1>
+        <p class="hero-sub">Buscador de fallos – Poder Judicial Formosa</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <p class="hint">Login → buscá por filtros → abrí el detalle del fallo. Podés pegar un ID para traer el documento completo.</p>
+
+    <!-- Login -->
+    <section class="card" id="auth">
+      <h2 style="margin:0 0 .5rem">1) Autenticación <span class="badge">(token 24 h)</span></h2>
+      <div class="grid">
+        <div>
+          <label for="user">Usuario</label>
+          <input id="user" value="f4ll05" autocomplete="username" />
+        </div>
+        <div>
+          <label for="pass">Clave</</label>
+          <input id="pass" value="jur15prud3nci4" type="password" autocomplete="current-password" />
+        </div>
+        <div>
+          <label class="sr" for="loginBtn"> </label>
+          <button id="loginBtn">Obtener token</button>
+          <div id="authStatus" class="status"></div>
+        </div>
+        <div>
+          <label class="sr" for="logoutBtn"> </label>
+          <button id="logoutBtn" class="secondary">Cerrar sesión API</button>
+        </div>
+      </div>
+      <p class="hint">Endpoints: <code>/api/v1.0/login</code>, <code>/login/salir</code>. Enviar header <code>Authorization: Bearer &lt;TOKEN&gt;</code>.</p>
+    </section>
+
+    <!-- Búsqueda -->
+    <section class="card">
+      <h2 style="margin:0 0 .5rem">2) Buscar fallos (listado)</h2>
+      <div class="grid">
+        <div>
+          <label>Jurisdicción</label>
+          <input id="jurisdiccion" placeholder="LOCAL" value="LOCAL" />
+        </div>
+        <div>
+          <label>Provincia</label>
+          <input id="provincia" placeholder="FORMOSA" value="FORMOSA" />
+        </div>
+        <div>
+          <label>Publicación desde</label>
+          <input id="pubDesde" type="date" />
+        </div>
+        <div>
+          <label>Publicación hasta</label>
+          <input id="pubHasta" type="date" />
+        </div>
+        <div>
+          <label>Fecha última mod. (YYYY-MM-DD)</label>
+          <input id="fechaUmod" placeholder="2023-05-09" />
+        </div>
+        <div>
+          <label>Tribunal</label>
+          <input id="tribunal" placeholder="EXCMA. CAMARA CIVIL Y COMERCIAL" />
+        </div>
+        <div>
+          <label>Texto (carátula / texto fallo)</label>
+          <input id="texto" placeholder="JUICIO ORDINARIO, DESALOJO, etc." />
+        </div>
+        <div class="grid" style="grid-template-columns:repeat(2,1fr);gap:10px">
+          <div>
+            <label>Offset</label>
+            <input id="offset" type="number" min="0" value="0" />
+          </div>
+          <div>
+            <label>Limit</label>
+            <input id="limit" type="number" min="1" value="20" />
+          </div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button id="searchBtn">Buscar fallos</button>
+        <button id="clearBtn" class="secondary">Limpiar filtros</button>
+      </div>
+      <div id="resultStatus" class="status"></div>
+      <div id="results"></div>
+    </section>
+
+    <!-- Detalle por ID -->
+    <section class="card">
+      <h2 style="margin:0 0 .5rem">3) Leer fallo por ID (full document)</h2>
+      <div class="grid" style="grid-template-columns:2fr 1fr">
+        <div>
+          <label for="falloId">ID de fallo</label>
+          <input id="falloId" placeholder="Ej.: 17609" />
+        </div>
+        <div>
+          <label class="sr" for="byIdBtn"> </label>
+          <button id="byIdBtn">Traer detalle</button>
+        </div>
+      </div>
+      <details id="byIdBox" style="margin-top:10px">
+        <summary>Ver JSON</summary>
+        <pre id="byIdJson" style="white-space:pre-wrap;overflow:auto"></pre>
+      </details>
+    </section>
+
+    <footer>
+      <p>Notas rápidas:</p>
+      <ul>
+        <li>Rutas: <code>/jurisprudencia/fallos</code> (listado) y <code>/jurisprudencia/fallos/fulldocument?id=</code> (detalle).</li>
+        <li>Si abrís el archivo como <code>file://</code> algunos navegadores bloquean CORS. Sugerido: <code>python -m http.server 8080</code> y navegar a <code>http://localhost:8080</code>.</li>
+        <li>El token expira a las 24 h; renová desde el paso 1 si ves 401.</li>
+      </ul>
+    </footer>
+  </div>
+
+  <script>
+  (function(){
+    const API_BASE = "https://api-biblioteca.jusformosa.gob.ar/api/v1.0";
+    let token = null;
+
+    // Helpers
+    const $ = sel => document.querySelector(sel);
+    const setStatus = (el, msg, ok) => {
+      el.textContent = msg || "";
+      el.className = "status " + (ok===true ? "ok" : ok===false ? "err" : "");
+    };
+    const headers = () => token ? { "Authorization": "Bearer " + token } : {};
+
+    // Auth
+    $("#loginBtn").addEventListener("click", async () => {
+      const user = $("#user").value.trim();
+      const pass = $("#pass").value.trim();
+      setStatus($("#authStatus"), "Autenticando...", null);
+      try {
+        const res = await fetch(API_BASE + "/login", {
+          method:"POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ usuario: user, clave: pass })
+        });
+        if(!res.ok){ throw new Error("HTTP " + res.status); }
+        const data = await res.json();
+        token = data.token || null;
+        setStatus($("#authStatus"), token ? "Token obtenido ✔" : "Sin token en respuesta", !!token);
+      } catch(err){
+        setStatus($("#authStatus"), "Error al autenticar: " + err.message, false);
+      }
+    });
+
+    $("#logoutBtn").addEventListener("click", async () => {
+      if(!token){ setStatus($("#authStatus"), "No hay token activo.", false); return; }
+      try{
+        const res = await fetch(API_BASE + "/login/salir", { method:"POST", headers: headers() });
+        token = null;
+        setStatus($("#authStatus"), res.ok ? "Sesión cerrada." : "Desconectado (respuesta no OK).", res.ok);
+      }catch(err){
+        token = null;
+        setStatus($("#authStatus"), "Desconectado localmente.", true);
+      }
+    });
+
+    // Build query params
+    function buildParams() {
+      const q = new URLSearchParams();
+      const map = {
+        jurisdiccion: $("#jurisdiccion").value.trim(),
+        provincia: $("#provincia").value.trim(),
+        publicacion_desde: $("#pubDesde").value.trim(),
+        publicacion_hasta: $("#pubHasta").value.trim(),
+        fecha_umod: $("#fechaUmod").value.trim(),
+        texto: $("#texto").value.trim(),
+        tribunal: $("#tribunal").value.trim(),
+        offset: $("#offset").value.trim(),
+        limit: $("#limit").value.trim()
+      };
+      Object.entries(map).forEach(([k,v])=>{ if(v) q.append(k, v); });
+      return q.toString();
+    }
+
+    // Render table
+    function renderResults(payload){
+      const container = $("#results");
+      container.innerHTML = "";
+
+      const sr = payload?.document?.SearchResultList;
+      const list = payload?.document?.DocumentResultList?.fallos || [];
+      const total = sr?.results ?? list.length;
+
+      const head = document.createElement("div");
+      head.innerHTML = `
+        <div class="toolbar">
+          <span class="pill">Resultados: ${total}</span>
+        </div>`;
+      container.appendChild(head);
+
+      if(!list.length){
+        const p = document.createElement("p");
+        p.className = "hint";
+        p.textContent = "No se encontraron fallos con esos criterios.";
+        container.appendChild(p);
+        return;
+      }
+
+      const table = document.createElement("table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Tribunal</th>
+            <th>Tipo</th>
+            <th>Carátula / Sobre</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      `;
+      const tbody = table.querySelector("tbody");
+
+      for(const item of list){
+        const c = item.content || {};
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${c.id_fallo ?? ""}</td>
+          <td>${c.fecha ?? ""}</td>
+          <td>${c.tribunal ?? ""}</td>
+          <td>${c.tipo_fallo ?? ""}</td>
+          <td>${(c.caratula && (c.caratula.sobre || "")) || ""}</td>
+          <td><button data-id="${c.id_fallo || ""}" class="secondary btn-detalle">Ver detalle</button></td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      container.appendChild(table);
+
+      // Wire buttons
+      container.querySelectorAll(".btn-detalle").forEach(btn=>{
+        btn.addEventListener("click", async (e)=>{
+          const id = e.target.getAttribute("data-id");
+          if(!id){ return; }
+          $("#falloId").value = id;
+          await fetchById(id, true);
+          window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+        });
+      });
+    }
+
+    // Search
+    $("#searchBtn").addEventListener("click", async ()=>{
+      if(!token){ setStatus($("#resultStatus"), "Primero autenticá para obtener un token.", false); return; }
+      setStatus($("#resultStatus"), "Buscando…", null);
+      try{
+        const qs = buildParams();
+        const url = API_BASE + "/jurisprudencia/fallos" + (qs ? ("?" + qs) : "");
+        const res = await fetch(url, { headers: headers() });
+        if(!res.ok){ throw new Error("HTTP " + res.status); }
+        const data = await res.json();
+        renderResults(data);
+        setStatus($("#resultStatus"), "Búsqueda completa ✔", true);
+      }catch(err){
+        setStatus($("#resultStatus"), "Error en la búsqueda: " + err.message, false);
+      }
+    });
+
+    $("#clearBtn").addEventListener("click", ()=>{
+      ["jurisdiccion","provincia","pubDesde","pubHasta","fechaUmod","texto","tribunal"].forEach(id=>$("#"+id).value="");
+      $("#offset").value = 0; $("#limit").value = 20;
+      $("#results").innerHTML = "";
+      setStatus($("#resultStatus"), "", null);
+    });
+
+    // By ID
+    async function fetchById(id, openDetails){
+      if(!token){ setStatus($("#byIdBox"), "Primero autenticá para obtener un token.", false); return; }
+      try{
+        const url = API_BASE + "/jurisprudencia/fallos/fulldocument?id=" + encodeURIComponent(id);
+        const res = await fetch(url, { headers: headers() });
+        if(!res.ok){ throw new Error("HTTP " + res.status); }
+        const data = await res.json();
+        $("#byIdJson").textContent = JSON.stringify(data, null, 2);
+        if(openDetails){ $("#byIdBox").open = true; }
+      }catch(err){
+        $("#byIdJson").textContent = "Error leyendo el fallo: " + err.message;
+        $("#byIdBox").open = true;
+      }
+    }
+
+    $("#byIdBtn").addEventListener("click", async ()=>{
+      const id = $("#falloId").value.trim();
+      if(!id){ $("#byIdJson").textContent = "Ingresá un ID de fallo."; $("#byIdBox").open = true; return; }
+      await fetchById(id, true);
+    });
+  })();
+  </script>
+</body>
+</html>
