@@ -38,33 +38,6 @@
     details.tests{margin-top:18px}
     .pass{color:#22c55e}
     .fail{color:#ef4444}
-
-    /* === LOGIN (gate) === */
-    .gate-backdrop{
-      position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-      background:rgba(0,0,0,.68); backdrop-filter: blur(4px); z-index:9999;
-    }
-    .gate{
-      width:min(92vw,420px); border-radius:18px; padding:22px; background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.18); color:#fff; box-shadow:0 10px 30px rgba(0,0,0,.35)
-    }
-    .gate h2{margin:0 0 6px; font-size:22px}
-    .gate p{margin:0 0 16px; opacity:.9}
-    .row{display:flex; flex-direction:column; gap:8px; margin:10px 0}
-    label{font-size:13px; opacity:.9}
-    input[type="text"], input[type="password"]{
-      width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.25);
-      background:rgba(255,255,255,.08); color:#fff; outline:none;
-    }
-    .btn{
-      display:inline-flex; gap:8px; align-items:center; justify-content:center;
-      padding:10px 14px; border-radius:12px; font-weight:700; cursor:pointer;
-      border:1px solid rgba(255,255,255,.25); background:var(--clarin-red); color:#fff; width:100%;
-    }
-    .muted{opacity:.8; font-size:12px; margin-top:8px}
-    .error{color:#ffb4b4; font-size:13px; min-height:1.2em}
-    .hidden{display:none}
-    .logout{cursor:pointer; border:1px solid rgba(255,255,255,.25); border-radius:10px; padding:6px 10px; font-weight:700}
   </style>
 </head>
 <body>
@@ -87,21 +60,17 @@
     </p>
   </div>
 
-  <!-- Gate overlay (se inyecta y controla por JS, pero dejo contenedor por si querés estilizar) -->
   <div id="gate-root" class="hidden"></div>
 
   <script>
   (async function main(){
     if (!window.d3) { window.addEventListener('load', main, { once:true }); return; }
 
-    // ====== CONFIG: usuarios permitidos (hash SHA-256 de la contraseña) ======
-    // Usuario de ejemplo: santi / formosa2025
     const USERS = {
       "santi": "577cdff578c53070dd214192c908a30334f61d0c262c9ab4f39d44f73be096d7"
     };
     const AUTH_NS = "viz_auth_formosa_v1";
 
-    // ========= Utilidades de hashing / sesión =========
     async function sha256Hex(text){
       const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
       return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
@@ -110,74 +79,25 @@
     function clearSession(){ localStorage.removeItem(AUTH_NS); location.reload(); }
     function getSession(){ try{ return JSON.parse(localStorage.getItem(AUTH_NS)||''); }catch{ return null; } }
 
-    // ========= Render login si no está autenticado =========
     async function requireAuth(){
       const s = getSession();
       if (s && USERS[s.user]) { return s.user; }
-
-      const root = document.getElementById('gate-root');
-      root.className = 'gate-backdrop';
-      root.innerHTML = `
-        <div class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
-          <h2 id="gate-title">Acceso a visualizaciones</h2>
-          <p>Ingresá usuario y contraseña para ver los enlaces.</p>
-          <div class="row">
-            <label for="u">Usuario</label>
-            <input id="u" type="text" autocomplete="username" placeholder="tu usuario">
-          </div>
-          <div class="row">
-            <label for="p">Contraseña</label>
-            <input id="p" type="password" autocomplete="current-password" placeholder="••••••••">
-          </div>
-          <div class="error" id="err"></div>
-          <button id="go" class="btn">Ingresar</button>
-          <p class="muted">Tip: podés cambiar usuarios/clave en el objeto <code>USERS</code>.</p>
-        </div>
-      `;
-      const $u = root.querySelector('#u');
-      const $p = root.querySelector('#p');
-      const $go = root.querySelector('#go');
-      const $err = root.querySelector('#err');
-
-      async function tryLogin(){
-        const user = ($u.value||'').trim();
-        const pass = $p.value||'';
-        if (!USERS[user]) { $err.textContent='Usuario o contraseña inválidos.'; return; }
-        const ok = await sha256Hex(pass) === USERS[user];
-        if (!ok){ $err.textContent='Usuario o contraseña inválidos.'; return; }
-        saveSession(user);
-        root.remove();
-        return user;
-      }
-      $go.addEventListener('click', tryLogin);
-      $p.addEventListener('keydown', e=>{ if(e.key==='Enter') tryLogin(); });
-      $u.addEventListener('keydown', e=>{ if(e.key==='Enter') $p.focus(); });
-
-      $u.focus();
-      // Esperar hasta que inicie sesión
-      return new Promise(resolve=>{
-        const i = setInterval(()=>{
-          const s2 = getSession();
-          if (s2 && USERS[s2.user]) { clearInterval(i); resolve(s2.user); }
-        }, 100);
-      });
+      return new Promise(resolve=>{ resolve('santi'); });
     }
 
     const user = await requireAuth();
-    // Mostrar quién está logueado y botón salir
     const who = document.getElementById('whoami');
     const logout = document.getElementById('logout');
     if (user){ who.textContent = `Conectado: ${user}`; logout.classList.remove('hidden'); }
     logout.addEventListener('click', clearSession);
 
-    // ========= Tu listado original =========
     const items = [
-      { title: 'Drogas incautadas — Clorinda', file: 'drogas_incautadas_clorinda.html', blurb: 'Desglose por sustancia y hallazgo.' },
+      { title: 'Mapa — Drogas incautadas', file: 'drogas_incautadas_clorinda.html', blurb: 'Desglose por sustancia y hallazgo.' },
       { title: 'Mapa — Fuerzas & Incautaciones', file: 'mapa_fuerzas_incautaciones.html', blurb: 'Ubicación y fuerza interviniente.' },
       { title: 'Videoteca — Narcotráfico y poder en Formosa', file: 'videoteca_estilo_clarin_narcotrafico_y_poder_en_formosa_html.html', blurb: 'Tres videos periodísticos sobre narcotráfico y poder en Formosa.' },
-      { title: 'Aprehendidos — Serie anual (D3)', file: 'visualizacion_aprehendidos_d_3_formosa.html', blurb: 'Barras con evolución 2015–2024.' },
-      { title: 'Cocaína — Serie (D3)', file: 'visualizacion_cocaina_d_3_formosa.html', blurb: 'Tendencia y variación interanual.' },
-      { title: 'Marihuana — Serie (D3)', file: 'visualizacion_marihuana_d_3_formosa.html', blurb: 'Evolución y picos relevantes.' }
+      { title: 'Infografía — Detenidos', file: 'visualizacion_aprehendidos_d_3_formosa.html', blurb: 'Barras con evolución 2015–2024.' },
+      { title: 'Infografía — Cocaína', file: 'visualizacion_cocaina_d_3_formosa.html', blurb: 'Tendencia y variación interanual.' },
+      { title: 'Infografía — Marihuana', file: 'visualizacion_marihuana_d_3_formosa.html', blurb: 'Evolución y picos relevantes.' }
     ];
     const BASE = 'https://santimaestri.github.io/Formosa_Viz/';
 
@@ -192,29 +112,6 @@
     sel.append('p').text(d => d.blurb);
     sel.append('span').attr('class','cta').html(`Abrir
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
-
-    // ========= Animación línea =========
-    const u = d3.select('#u-line');
-    function animateUnderline(){
-      u.style('background', 'rgba(255,255,255,.2)');
-      const dur = 900;
-      d3.select('#u-line')
-        .transition().duration(dur)
-        .style('background', '#E10000')
-        .transition().duration(600)
-        .style('background', 'rgba(255,255,255,.35)');
-    }
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) animateUnderline(); });
-    animateUnderline();
-
-    // ========= Autotests =========
-    (function tests(){
-      const out=[]; const ok=(name)=>out.push({name,ok:true}); const ko=(name,msg)=>out.push({name,ok:false,msg});
-      try{ if(window.d3) ok('d3 cargó'); else ko('d3 cargó','d3 no está definido'); }catch(e){ ko('d3 cargó', e.message); }
-      try{ const n = document.querySelectorAll('a.card').length; if(n===items.length) ok('Se renderizaron todas las tarjetas'); else ko('Render tarjetas', `esperado ${items.length}, got ${n}`);}catch(e){ ko('Render tarjetas', e.message); }
-      try{ const allBlank = [...document.querySelectorAll('a.card')].every(a=>a.getAttribute('target')==='_blank'); if(allBlank) ok('Links abren en nueva pestaña'); else ko('Target _blank','faltan target'); }catch(e){ ko('Target _blank', e.message); }
-      const ul=document.getElementById('test-list'); out.forEach(t=>{ const li=document.createElement('li'); li.textContent=(t.ok?'✓ ':'✗ ')+t.name+(t.ok?'':` — ${t.msg||''}`); li.className=t.ok?'pass':'fail'; ul.appendChild(li); });
-    })();
   })();
   </script>
 </body>
