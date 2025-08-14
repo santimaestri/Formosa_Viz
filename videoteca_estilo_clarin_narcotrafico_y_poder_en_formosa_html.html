@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Videoteca | Narcotráfico y poder en Formosa</title>
+  <meta name="description" content="Videoteca con tres videos periodísticos sobre narcotráfico y vínculos con el poder en Formosa." />
+  <meta name="author" content="Santiago Maestri" />
+
+  <!-- Colores y tipografías inspirados en Clarín -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Videoteca | Narcotráfico y poder en Formosa" />
+  <meta property="og:description" content="Selección de tres videos de YouTube sobre narcotráfico y poder en Formosa." />
+  <meta property="og:image" content="https://www.clarin.com/img/2025/07/23/ppysLASu9_1256x620__1.jpg" />
+  <meta property="og:locale" content="es_AR" />
+
+  <style>
+    :root{
+      --rojo: #e10000; /* rojo Clarín aproximado */
+      --rojo-oscuro: #b50000;
+      --gris-100: #f7f7f7;
+      --gris-200: #eeeeee;
+      --gris-500: #6b6b6b;
+      --negro: #111111;
+      --maxw: 1100px;
+    }
+    html, body{margin:0;padding:0;background:#fff;color:var(--negro);}    
+    body{font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif;line-height:1.55;}
+
+    /* Topbar */
+    .topbar{background:var(--rojo); color:#fff;}
+    .topbar-inner{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 16px;}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px;text-transform:uppercase;}
+    .brand .logo{width:28px;height:28px;border-radius:50%;background:#fff;display:inline-block;}
+    .brand .name{font-size:18px;}
+    .nav{display:flex;gap:12px;font-size:14px;opacity:.95}
+    .nav a{color:#fff;text-decoration:none;padding:6px 8px;border-radius:6px}
+    .nav a:hover{background:var(--rojo-oscuro)}
+
+    /* Header */
+    header.hero{border-bottom:4px solid var(--rojo); background:linear-gradient(180deg,#fff, var(--gris-100));}
+    .hero-inner{max-width:var(--maxw);margin:0 auto;padding:24px 16px 18px 16px;}
+    .section-kicker{color:var(--rojo);font-weight:700;text-transform:uppercase;letter-spacing:.35px;margin-bottom:8px;font-size:13px}
+    .title{font-family:'Merriweather', Georgia, 'Times New Roman', serif; font-weight:900; font-size: clamp(28px, 4vw, 44px); line-height:1.15; margin:0 0 10px 0;}
+    .subtitle{color:#333; font-size: clamp(15px, 2.2vw, 18px); max-width: 66ch;}
+    .meta{color:var(--gris-500); font-size:13px; margin-top:8px}
+
+    /* Grid Videos */
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:22px 16px}
+    .grid{display:grid;grid-template-columns:1fr;gap:18px}
+    @media (min-width: 720px){ .grid{grid-template-columns: 1fr 1fr;}}
+    @media (min-width: 1024px){ .grid{grid-template-columns: 2fr 2fr 2fr;}}
+
+    .card{border-top:3px solid var(--rojo); background:#fff; box-shadow: 0 1px 0 var(--gris-200), 0 2px 10px rgba(0,0,0,.05); border-radius:10px; overflow:hidden; display:flex; flex-direction:column}
+    .thumb{aspect-ratio:16/9; background:#000; position:relative}
+    .thumb iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+    .card-body{padding:14px 14px 16px}
+    .tag{display:inline-block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.35px; color:var(--rojo); background:#fff; border:1px solid var(--rojo); border-radius:14px; padding:3px 8px; margin-bottom:8px}
+    .card h3{font-family:'Merriweather', Georgia, Times, serif; font-size:20px; line-height:1.25; margin:6px 0 8px}
+    .card p{font-size:14.5px; color:#222; margin:0 0 10px}
+    .byline{font-size:12.5px; color:var(--gris-500)}
+
+    /* Nota al lector */
+    .note{border-left:4px solid var(--rojo); background:var(--gris-100); padding:12px 14px; font-size:14px; border-radius:6px}
+
+    /* Footer */
+    footer{border-top:1px solid var(--gris-200); background:#fafafa}
+    .foot-inner{max-width:var(--maxw); margin:0 auto; padding:18px 16px; font-size:13px; color:#444; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between}
+    .credits{opacity:.9}
+    .btn{display:inline-block; background:var(--rojo); color:#fff; padding:10px 14px; border-radius:8px; text-decoration:none; font-weight:700}
+    .btn:hover{background:var(--rojo-oscuro)}
+  </style>
+
+  <!-- JSON-LD: lista de videos -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Videoteca: Narcotráfico y poder en Formosa",
+    "itemListElement": [
+      {
+        "@type": "VideoObject",
+        "position": 1,
+        "name": "Video 1",
+        "url": "https://www.youtube.com/watch?v=fLi3VY802o8",
+        "embedUrl": "https://www.youtube-nocookie.com/embed/fLi3VY802o8"
+      },
+      {
+        "@type": "VideoObject",
+        "position": 2,
+        "name": "Video 2",
+        "url": "https://www.youtube.com/watch?v=JlZFjTFVjuE",
+        "embedUrl": "https://www.youtube-nocookie.com/embed/JlZFjTFVjuE"
+      },
+      {
+        "@type": "VideoObject",
+        "position": 3,
+        "name": "Video 3",
+        "url": "https://www.youtube.com/watch?v=pliyp3R-XYA",
+        "embedUrl": "https://www.youtube-nocookie.com/embed/pliyp3R-XYA"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- Barra superior -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand" aria-label="Marca estilo Clarín">
+        <span class="logo" aria-hidden="true"></span>
+        <span class="name">Clarín · Investigación</span>
+      </div>
+      <nav class="nav" aria-label="Secciones">
+        <a href="#videos">Videos</a>
+        <a href="#contexto">Contexto</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Encabezado -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="section-kicker">Videoteca</div>
+      <h1 class="title">Narcotráfico y poder en Formosa: tres videos clave</h1>
+      <p class="subtitle">Una selección curada con testimonios, investigaciones y documentos para entender cómo operan las redes y sus vínculos con el poder provincial.</p>
+      <div class="meta">Actualizado hoy • Investigación y análisis</div>
+    </div>
+  </header>
+
+  <main class="wrap" id="videos">
+    <section class="note" aria-label="Nota editorial">
+      <strong>Contexto:</strong> Los siguientes videos fueron seleccionados por su relevancia periodística. Las opiniones expresadas en cada canal corresponden a sus autores.
+    </section>
+
+    <div class="grid" style="margin-top:16px">
+      <!-- Video 1 -->
+      <article class="card" data-youtube-url="https://www.youtube.com/watch?v=fLi3VY802o8">
+        <div class="thumb">
+          <iframe src="https://www.youtube-nocookie.com/embed/fLi3VY802o8" title="Video 1 – Narcotráfico y poder en Formosa" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="card-body">
+          <span class="tag">Investigación</span>
+          <h3 class="yt-title">Cargando título…</h3>
+          <p class="yt-desc">Cargando descripción…</p>
+          <div class="byline">Fuente: YouTube · ID fLi3VY802o8</div>
+        </div>
+      </article>
+
+      <!-- Video 2 -->
+      <article class="card" data-youtube-url="https://www.youtube.com/watch?v=JlZFjTFVjuE">
+        <div class="thumb">
+          <iframe src="https://www.youtube-nocookie.com/embed/JlZFjTFVjuE" title="Video 2 – Narcotráfico y poder en Formosa" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="card-body">
+          <span class="tag">Testimonios</span>
+          <h3 class="yt-title">Cargando título…</h3>
+          <p class="yt-desc">Cargando descripción…</p>
+          <div class="byline">Fuente: YouTube · ID JlZFjTFVjuE</div>
+        </div>
+      </article>
+
+      <!-- Video 3 -->
+      <article class="card" data-youtube-url="https://www.youtube.com/watch?v=pliyp3R-XYA">
+        <div class="thumb">
+          <iframe src="https://www.youtube-nocookie.com/embed/pliyp3R-XYA" title="Video 3 – Narcotráfico y poder en Formosa" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="card-body">
+          <span class="tag">Documentos</span>
+          <h3 class="yt-title">Cargando título…</h3>
+          <p class="yt-desc">Cargando descripción…</p>
+          <div class="byline">Fuente: YouTube · ID pliyp3R-XYA</div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <section class="wrap" id="contexto">
+    <h2 style="font-family:'Merriweather', Georgia, serif; font-size:26px; margin:8px 0 6px">Por qué esta selección</h2>
+    <p>Este módulo busca ordenar el material audiovisual disperso en plataformas y facilitar la navegación temática. Sugerencias de nuevos videos o correcciones: escribinos.</p>
+  </section>
+
+  <footer id="contacto">
+    <div class="foot-inner">
+      <div class="credits">© 2025 · Curaduría y edición: <strong>Santiago Maestri</strong></div>
+      <a class="btn" href="#videos">Volver arriba</a>
+    </div>
+  </footer>
+
+  <!-- Script: completa títulos y canal vía oEmbed -->
+  <script>
+    (function(){
+      async function fillFromOEmbed(card){
+        const url = card.getAttribute('data-youtube-url');
+        if(!url) return;
+        const titleEl = card.querySelector('.yt-title');
+        const descEl = card.querySelector('.yt-desc');
+        try{
+          const o = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`);
+          if(!o.ok) throw new Error('oEmbed HTTP '+o.status);
+          const data = await o.json();
+          if(titleEl){ titleEl.textContent = data.title || titleEl.textContent; }
+          if(descEl){
+            // oEmbed no incluye descripción; si no hay, usamos el autor como fallback
+            if(data.author_name){
+              descEl.textContent = `Canal: ${data.author_name}`;
+            } else {
+              descEl.textContent = 'Contenido disponible en YouTube';
+            }
+          }
+          // Actualiza el title del iframe si existe
+          const iframe = card.querySelector('iframe');
+          if(iframe && data.title){ iframe.setAttribute('title', data.title); }
+        }catch(err){
+          if(titleEl){ titleEl.textContent = titleEl.textContent.replace('Cargando título…','Video'); }
+          if(descEl){ descEl.textContent = 'No se pudo obtener metadatos automáticamente.'; }
+          console.warn('oEmbed error', err);
+        }
+      }
+      document.addEventListener('DOMContentLoaded', ()=>{
+        document.querySelectorAll('.card[data-youtube-url]').forEach(fillFromOEmbed);
+      });
+    })();
+  </script>
+</body>
+</html>
