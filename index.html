@@ -132,7 +132,8 @@
       { title: 'Videoteca — Narcotráfico y poder en Formosa', file: 'videoteca_estilo_clarin_narcotrafico_y_poder_en_formosa_html.html', blurb: 'Tres videos periodísticos sobre narcotráfico y poder en Formosa.' },
       { title: 'Infografía — Detenidos', file: 'visualizacion_aprehendidos_d_3_formosa.html', blurb: 'Barras con evolución 2015–2024.' },
       { title: 'Infografía — Cocaína', file: 'visualizacion_cocaina_d_3_formosa.html', blurb: 'Tendencia y variación interanual.' },
-      { title: 'Infografía — Marihuana', file: 'visualizacion_marihuana_d_3_formosa.html', blurb: 'Evolución y picos relevantes.' }
+      { title: 'Marihuana — Serie (D3)', file: 'visualizacion_marihuana_d_3_formosa.html', blurb: 'Evolución y picos relevantes.' },
+      { title: 'Investigaciones — Notas (D3)', file: 'notas_relacionadas.html', blurb: 'Artículos recientes.' }
     ];
     const BASE = 'https://santimaestri.github.io/Formosa_Viz/';
     const sel = d3.select('#links').selectAll('a.card').data(items).enter().append('a').attr('class','card').attr('href', d => `${BASE}${d.file}`).attr('target', '_blank').attr('rel','noopener');
