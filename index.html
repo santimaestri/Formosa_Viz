@@ -130,12 +130,12 @@
       { title: 'Mapa — Drogas incautadas', file: 'drogas_incautadas_clorinda.html', blurb: 'Desglose por sustancia y hallazgo.' },
       { title: 'Mapa — Fuerzas & Incautaciones', file: 'mapa_fuerzas_incautaciones.html', blurb: 'Ubicación y fuerza interviniente.' },
       { title: 'Videoteca — Narcotráfico y poder en Formosa', file: 'videoteca_estilo_clarin_narcotrafico_y_poder_en_formosa_html.html', blurb: 'Tres videos periodísticos sobre narcotráfico y poder en Formosa.' },
+      { title: 'Wordcloud — Análisis de palabras', file: 'clarin_wordcloud', blurb: 'Palabras más mencionadas de los entrevistados.' },      
       { title: 'Infografía — Detenidos', file: 'visualizacion_aprehendidos_d_3_formosa.html', blurb: 'Barras con evolución 2015–2024.' },
       { title: 'Infografía — Cocaína', file: 'visualizacion_cocaina_d_3_formosa.html', blurb: 'Tendencia y variación interanual.' },
       { title: 'Marihuana — Serie', file: 'visualizacion_marihuana_d_3_formosa.html', blurb: 'Evolución y picos relevantes.' },
       { title: 'Investigaciones — Notas', file: 'notas_relacionadas.html', blurb: 'Artículos recientes.' },
-      { title: 'Database — Poder Judicial Formosa (API)', file: 'buscador_de_fallos', blurb: 'Artículos recientes.' },
-      { title: 'Wordcloud — Análisis de palabras', file: 'clarin_wordcloud', blurb: 'Palabras más mencionadas en los videos de videoteca_estilo_clarin_narcotrafico_y_poder_en_formosa_html.' }      
+      { title: 'Database — Poder Judicial Formosa (API)', file: 'buscador_de_fallos', blurb: 'Artículos recientes.' }    
     ];
     const BASE = 'https://santimaestri.github.io/Formosa_Viz/';
     const sel = d3.select('#links').selectAll('a.card').data(items).enter().append('a').attr('class','card').attr('href', d => `${BASE}${d.file}`).attr('target', '_blank').attr('rel','noopener');
