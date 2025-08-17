@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard XLSX — Estilo Clarín</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --clarin-red:#e31c23;
+      --clarin-red-dark:#c0161c;
+      --text:#111827;
+      --muted:#6b7280;
+      --bg:#ffffff;
+      --panel:#ffffff;
+      --border:#e5e7eb;
+      --chip:#f8fafc;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    header{padding:20px 16px;border-bottom:2px solid var(--clarin-red);background:#fff;position:sticky;top:0;z-index:10}
+    header .brand{display:flex;align-items:center;gap:10px}
+    header .dot{width:14px;height:14px;background:var(--clarin-red);border-radius:50%}
+    header h1{margin:0;font-size:22px;font-weight:800;letter-spacing:.1px}
+    header p{margin:6px 0 0;color:var(--muted);font-size:13px}
+
+    .wrap{max-width:1200px;margin:0 auto;padding:18px}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:980px){.grid{grid-template-columns:360px 1fr}}
+
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px}
+    .card h2{margin:0 0 12px;font-size:13px;color:var(--clarin-red);text-transform:uppercase;letter-spacing:.12em}
+    label{display:block;font-size:12px;color:#374151;margin:10px 0 6px}
+    input[type="text"],select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:#fff;color:var(--text);outline:none}
+    input[type="number"]{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:#fff;color:var(--text);outline:none}
+    input[type="file"]{width:100%}
+    .row{display:flex;gap:10px;align-items:center}
+    .row > *{flex:1}
+
+    .btn{cursor:pointer;border:1px solid var(--border);background:#fff;padding:10px 12px;border-radius:10px;color:var(--text);font-weight:600}
+    .btn:hover{border-color:#d1d5db}
+    .btn.primary{background:var(--clarin-red);border-color:var(--clarin-red-dark);color:#fff}
+    .btn.primary:hover{background:var(--clarin-red-dark)}
+    .muted{color:var(--muted);font-size:12px}
+
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--border);color:#334155;font-size:12px}
+
+    canvas{width:100%!important;height:460px!important;background:#fff;border:1px solid var(--border);border-radius:10px}
+    table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px;background:#fff}
+    th,td{border-bottom:1px solid var(--border);padding:8px;text-align:left}
+    th{color:#111827}
+    .footer{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+    .badge{background:#fff;color:var(--clarin-red);border:1px solid var(--clarin-red);border-radius:8px;padding:4px 8px;font-size:11px;font-weight:700}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="dot"></div>
+      <h1>Dashboard XLSX — Clarín</h1>
+    </div>
+    <p>Cargá el Excel desde archivo o URL (raw de GitHub), elegí campos y generá el gráfico.</p>
+  </header>
+
+  <div class="wrap grid">
+    <div class="card" id="panel">
+      <h2>Datos</h2>
+      <label>📄 Cargar Excel (XLSX)</label>
+      <input type="file" id="fileInput" accept=".xlsx,.xls" />
+
+      <label style="margin-top:12px;">🌐 O cargar por URL (raw en GitHub)</label>
+      <div class="row">
+        <input type="text" id="urlInput" placeholder="https://raw.githubusercontent.com/usuario/repositorio/main/DF_clave_clorinda_al_dia_normalizado_revisado.xlsx" />
+        <button class="btn" id="btnLoadUrl">Cargar URL</button>
+      </div>
+
+      <label>🗂 Hoja</label>
+      <select id="sheetSelect"></select>
+
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+        <span class="pill">Detecta numéricas/categóricas</span>
+        <span class="pill">Filtros múltiples</span>
+        <span class="pill">Top N + orden</span>
+      </div>
+
+      <h2 style="margin-top:18px">Configurar</h2>
+      <label>📊 Tipo de gráfico</label>
+      <select id="chartType">
+        <option value="bar-h">Barras horizontales</option>
+        <option value="bar-v">Barras verticales</option>
+        <option value="line">Línea</option>
+      </select>
+
+      <label>🧭 Eje X (categoría)</label>
+      <select id="xSelect"></select>
+
+      <label>🧮 Agregación</label>
+      <select id="aggSelect">
+        <option value="sum">Suma</option>
+        <option value="avg">Promedio</option>
+        <option value="count">Conteo</option>
+        <option value="median">Mediana</option>
+        <option value="min">Mínimo</option>
+        <option value="max">Máximo</option>
+      </select>
+
+      <label>📐 Medida (número) — (no aplica si elegís “Conteo”)</label>
+      <select id="ySelect"></select>
+
+      <div class="row">
+        <div>
+          <label>🔢 Top N</label>
+          <input type="number" id="topN" min="1" value="20" />
+        </div>
+        <div>
+          <label>↕️ Orden</label>
+          <select id="sortDir">
+            <option value="desc">Descendente</option>
+            <option value="asc">Ascendente</option>
+          </select>
+        </div>
+      </div>
+
+      <h2 style="margin-top:18px">Filtros</h2>
+      <label>Filtro 1 — columna (categórica)</label>
+      <select id="filter1Col"></select>
+      <label>Valores (Ctrl/Cmd + click para múltiples)</label>
+      <select id="filter1Vals" multiple size="6"></select>
+
+      <label style="margin-top:10px">Filtro 2 — columna (categórica)</label>
+      <select id="filter2Col"></select>
+      <label>Valores</label>
+      <select id="filter2Vals" multiple size="6"></select>
+
+      <div class="row" style="margin-top:14px">
+        <button class="btn primary" id="btnRender">Actualizar gráfico</button>
+        <button class="btn" id="btnReset">Reiniciar</button>
+      </div>
+      <p class="muted" style="margin-top:8px">Tip: X = <b>autoridad_normalizada</b> • Medida = <b>cantidad_normalizada_g_float</b> • Agregación = <b>Suma</b>.</p>
+    </div>
+
