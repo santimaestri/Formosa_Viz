@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Línea de tiempo — Orlando Medina en Prensa Libre Formosa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --rojo:#E10000;      /* rojo estilo Clarín */
+      --gris:#6b7280;
+      --gris-claro:#f3f4f6;
+      --negro:#111827;
+      --bg:#ffffff;
+      --bordes:#e5e7eb;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--negro);font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5}
+    .wrap{max-width:980px;margin:0 auto;padding:24px 16px 64px}
+    header{border-bottom:3px solid var(--rojo);padding-bottom:12px;margin-bottom:24px}
+    h1{font-size:clamp(26px,3.5vw,40px);margin:0 0 6px;font-weight:800;letter-spacing:-0.5px}
+    .deck{color:var(--gris);font-weight:600;margin-bottom:4px}
+
+    /* timeline */
+    .timeline{position:relative;margin-left:6px;padding-left:24px}
+    .timeline:before{content:"";position:absolute;left:8px;top:0;bottom:0;width:4px;background:linear-gradient(var(--rojo),var(--rojo));opacity:.25;border-radius:4px}
+    .event{position:relative;margin:22px 0;padding:18px;border:1px solid var(--bordes);border-left:6px solid var(--rojo);border-radius:10px;background:#fff;box-shadow:0 1px 0 rgba(17,24,39,.03)}
+    .event:before{content:"";position:absolute;left:-14px;top:22px;width:14px;height:14px;background:#fff;border:4px solid var(--rojo);border-radius:50%}
+    .fecha{display:inline-block;font-weight:800;color:var(--rojo);letter-spacing:.2px;margin-bottom:6px}
+    .tit{font-size:clamp(18px,2.2vw,22px);font-weight:800;margin:4px 0 10px}
+    .bullets{margin:0 0 10px 18px}
+    .bullets li{margin:6px 0}
+    .url{display:block;margin-top:10px;font-size:14px;color:var(--gris)}
+    .url a{color:var(--gris);text-decoration:underline}
+    .meta{margin-top:28px;padding:12px;border-top:1px solid var(--bordes);color:var(--gris);font-size:14px}
+
+    /* utilidades */
+    .tag{display:inline-block;background:var(--gris-claro);color:#374151;border:1px solid var(--bordes);padding:2px 8px;border-radius:999px;font-size:12px;margin-right:6px}
+    @media print{
+      .event{break-inside:avoid}
+      a{color:#000;text-decoration:underline}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="deck">Dossier • Cronología periodística</div>
+      <h1>Orlando Medina en Prensa Libre Formosa</h1>
+      <div>
+        <span class="tag">Violencia institucional</span>
+        <span class="tag">Narcotráfico</span>
+        <span class="tag">Policía de Formosa</span>
+      </div>
+    </header>
+
+    <section class="timeline">
+
+      <!-- 14/03/2023 -->
+      <article class="event">
+        <div class="fecha">14 de marzo de 2023</div>
+        <h2 class="tit">Denunciaron al narco comisario Orlando Medina por violencia institucional para evitar que reclamen a Gildo Insfrán</h2>
+        <ul class="bullets">
+          <li>Vecinas de Clorinda denuncian amedrentamiento cuando intentan presentar reclamos a Insfrán (tarifas, salud y agua).</li>
+          <li>Acusan a Medina y a efectivos policiales de interceptarlas y amenazarlas para impedir la protesta.</li>
+          <li>Primer registro en la serie sobre uso de la fuerza para silenciar reclamos ciudadanos.</li>
+        </ul>
+        <small class="url">Fuente: <a href="https://www.prensalibreformosa.com/31848-denunciaron-al-narco-comisario-orlando-medida-por-violencia-institucional-para-evitar-que-reclamen-a-gildo-insfran" target="_blank" rel="noopener">prensalibreformosa.com/31848-…-insfran</a></small>
+        <small class="url">Video relacionado: <a href="https://www.youtube.com/watch?v=G-m4osdXFqU&t=23s" target="_blank" rel="noopener">YouTube</a></small>
+      </article>
+
+      <!-- 24/03/2023 -->
+      <article class="event">
+        <div class="fecha">24 de marzo de 2023</div>
+        <h2 class="tit">Carbajal: “Gildo Insfrán y los K son aliados políticos de los narcos. Orlando Medina lo certifica”</h2>
+        <ul class="bullets">
+          <li>El diputado Fernando Carbajal vincula al gobierno con el avance del crimen organizado.</li>
+          <li>Señala que Medina, con condena por narcotráfico, fue ubicado en un cargo clave en la frontera.</li>
+          <li>Apunta a la connivencia política–policial como esquema de control social.</li>
+        </ul>
+        <small class="url">Fuente: <a href="https://www.prensalibreformosa.com/31954-carbajal-gildo-insfran-y-los-k-son-aliados-politicos-de-los-narcos-orlando-medina-lo-certifica" target="_blank" rel="noopener">prensalibreformosa.com/31954-…-certifica</a></small>
+      </article>
+
+      <!-- 21/10/2024 -->
+      <article class="event">
+        <div class="fecha">21 de octubre de 2024</div>
+        <h2 class="tit">Neme lo tildó de narco, psicópata, sinvergüenza, delincuente, mentiroso al jefe de policía de Clorinda</h2>
+        <ul class="bullets">
+          <li>Gabriela Neme afirma que el parte policial sobre “lesiones recíprocas” es falso.</li>
+          <li>Denuncia golpiza a Francisco Bernabé por policías sin identificación.</li>
+          <li>Recalca antecedentes de Medina y lo responsabiliza por una cultura de impunidad.</li>
+        </ul>
+        <small class="url">Fuente: <a href="https://www.prensalibreformosa.com/37083-neme-lo-tildo-de-narco-psicopata-sinverguenza-delincuente-mentiroso-al-jefe-de-policia-de-clorinda" target="_blank" rel="noopener">prensalibreformosa.com/37083-…-clorinda</a></small>
+      </article>
+
+      <!-- 29/10/2024 -->
+      <article class="event">
+        <div class="fecha">29 de octubre de 2024</div>
+        <h2 class="tit">Basualdo consideró “inmoral” la protección de Insfrán al narco comisario Orlando Medina</h2>
+        <ul class="bullets">
+          <li>Atilio Basualdo denuncia intento de asesinato y disparos a un camión de su propiedad.</li>
+          <li>Atribuye la orden a Insfrán y acusa cobertura política al accionar policial.</li>
+          <li>Recuerda el vínculo de Medina con el narco Héctor “Korea” Gallego.</li>
+        </ul>
+        <small class="url">Fuente: <a href="https://www.prensalibreformosa.com/37163-basualdo-considero-inmoral-la-proteccion-de-insfran-al-narco-comisario-orlando-medina" target="_blank" rel="noopener">prensalibreformosa.com/37163-…-medina</a></small>
+      </article>
+
+      <!-- 30/10/2024 -->
+      <article class="event">
+        <div class="fecha">30 de octubre de 2024</div>
+        <h2 class="tit">González consideró “genial” el show montado por Brígnole con policías para satirizar las denuncias de Basualdo</h2>
+        <ul class="bullets">
+          <li>Respuesta oficialista con videos satíricos y puestas en escena con policías.</li>
+          <li>Se denuncia uso partidario de la fuerza y banalización de acusaciones graves.</li>
+          <li>Se refuerza el clima de impunidad alrededor de Medina e Insfrán.</li>
+        </ul>
+        <small class="url">Fuente: <a href="https://www.prensalibreformosa.com/37169-gonzalez-considero-genial-el-show-montado-por-brignole-con-policias-para-satirizar-las-denuncias-de-basualdo" target="_blank" rel="noopener">prensalibreformosa.com/37169-…-basualdo</a></small>
+        <small class="url">Video relacionado: <a href="https://www.youtube.com/watch?v=rluqR-QACpw" target="_blank" rel="noopener">YouTube</a></small>
+      </article>
+
+    </section>
+
+    <div class="meta">
+      Compilación y resúmenes elaborados a partir de notas de Prensa Libre Formosa. Última actualización: <time datetime="2025-08-17">17/08/2025</time>.
+    </div>
+  </div>
+</body>
+</html>
