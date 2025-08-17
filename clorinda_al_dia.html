@@ -1,142 +1,621 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dashboard XLSX — Estilo Clarín</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --clarin-red:#e31c23;
-      --clarin-red-dark:#c0161c;
-      --text:#111827;
-      --muted:#6b7280;
-      --bg:#ffffff;
-      --panel:#ffffff;
-      --border:#e5e7eb;
-      --chip:#f8fafc;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    header{padding:20px 16px;border-bottom:2px solid var(--clarin-red);background:#fff;position:sticky;top:0;z-index:10}
-    header .brand{display:flex;align-items:center;gap:10px}
-    header .dot{width:14px;height:14px;background:var(--clarin-red);border-radius:50%}
-    header h1{margin:0;font-size:22px;font-weight:800;letter-spacing:.1px}
-    header p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Datos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+    <style>
+        :root {
+            --color-principal: #e30613; /* Rojo Clarín */
+            --color-fondo: #f5f5f5;
+            --color-blanco: #ffffff;
+            --color-gris-claro: #ececec;
+            --color-borde: #ddd;
+            --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-    .wrap{max-width:1200px;margin:0 auto;padding:18px}
-    .grid{display:grid;grid-template-columns:1fr;gap:16px}
-    @media(min-width:980px){.grid{grid-template-columns:360px 1fr}}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--color-fondo);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
 
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px}
-    .card h2{margin:0 0 12px;font-size:13px;color:var(--clarin-red);text-transform:uppercase;letter-spacing:.12em}
-    label{display:block;font-size:12px;color:#374151;margin:10px 0 6px}
-    input[type="text"],select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:#fff;color:var(--text);outline:none}
-    input[type="number"]{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:#fff;color:var(--text);outline:none}
-    input[type="file"]{width:100%}
-    .row{display:flex;gap:10px;align-items:center}
-    .row > *{flex:1}
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    .btn{cursor:pointer;border:1px solid var(--border);background:#fff;padding:10px 12px;border-radius:10px;color:var(--text);font-weight:600}
-    .btn:hover{border-color:#d1d5db}
-    .btn.primary{background:var(--clarin-red);border-color:var(--clarin-red-dark);color:#fff}
-    .btn.primary:hover{background:var(--clarin-red-dark)}
-    .muted{color:var(--muted);font-size:12px}
+        @media (min-width: 992px) {
+            .container {
+                flex-direction: row;
+            }
+        }
 
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--border);color:#334155;font-size:12px}
+        header {
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: var(--sombra);
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
 
-    canvas{width:100%!important;height:460px!important;background:#fff;border:1px solid var(--border);border-radius:10px}
-    table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px;background:#fff}
-    th,td{border-bottom:1px solid var(--border);padding:8px;text-align:left}
-    th{color:#111827}
-    .footer{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
-    .badge{background:#fff;color:var(--clarin-red);border:1px solid var(--clarin-red);border-radius:8px;padding:4px 8px;font-size:11px;font-weight:700}
-  </style>
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .panel, .visualizations {
+            background-color: var(--color-blanco);
+            border-radius: 8px;
+            box-shadow: var(--sombra);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            width: 100%;
+        }
+
+        @media (min-width: 992px) {
+            .panel {
+                min-width: 300px;
+                max-width: 350px;
+                margin-right: 20px;
+                position: sticky;
+                top: 20px;
+                align-self: flex-start;
+            }
+        }
+
+        .visualizations {
+            flex-grow: 1;
+        }
+
+        .controls-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        select, input[type="file"], input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--color-borde);
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: var(--color-gris-claro);
+            margin-bottom: 10px;
+        }
+
+        select[multiple] {
+            min-height: 120px;
+        }
+        
+        button {
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #c9050f;
+        }
+        
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        #chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+
+        #data-table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--color-borde);
+            border-radius: 6px;
+        }
+
+        #data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #data-table th, #data-table td {
+            border: 1px solid var(--color-gris-claro);
+            padding: 10px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        
+        #data-table th {
+            background-color: var(--color-gris-claro);
+            position: sticky;
+            top: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <div class="brand">
-      <div class="dot"></div>
-      <h1>Dashboard XLSX — Clarín</h1>
-    </div>
-    <p>Cargá el Excel desde archivo o URL (raw de GitHub), elegí campos y generá el gráfico.</p>
-  </header>
 
-  <div class="wrap grid">
-    <div class="card" id="panel">
-      <h2>Datos</h2>
-      <label>📄 Cargar Excel (XLSX)</label>
-      <input type="file" id="fileInput" accept=".xlsx,.xls" />
+    <div class="container">
+        <div class="panel">
+            <header>
+                <h1>Configuración</h1>
+            </header>
 
-      <label style="margin-top:12px;">🌐 O cargar por URL (raw en GitHub)</label>
-      <div class="row">
-        <input type="text" id="urlInput" placeholder="https://raw.githubusercontent.com/usuario/repositorio/main/DF_clave_clorinda_al_dia_normalizado_revisado.xlsx" />
-        <button class="btn" id="btnLoadUrl">Cargar URL</button>
-      </div>
+            <div class="controls-group">
+                <label for="urlInput">Cargar desde URL de GitHub</label>
+                <input type="text" id="urlInput" placeholder="Ej: https://raw.githubusercontent.com/.../archivo.xlsx">
+                <button onclick="loadFromUrl()">Cargar URL</button>
+            </div>
 
-      <label>🗂 Hoja</label>
-      <select id="sheetSelect"></select>
+            <div class="controls-group">
+                <label for="fileInput">Cargar desde tu computadora (.xlsx)</label>
+                <input type="file" id="fileInput" accept=".xlsx" onchange="loadFromFile()">
+            </div>
 
-      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-        <span class="pill">Detecta numéricas/categóricas</span>
-        <span class="pill">Filtros múltiples</span>
-        <span class="pill">Top N + orden</span>
-      </div>
+            <div class="controls-group hidden" id="sheet-control-group">
+                <label for="sheetSelector">Seleccionar Hoja</label>
+                <select id="sheetSelector" onchange="onSheetChange()"></select>
+            </div>
 
-      <h2 style="margin-top:18px">Configurar</h2>
-      <label>📊 Tipo de gráfico</label>
-      <select id="chartType">
-        <option value="bar-h">Barras horizontales</option>
-        <option value="bar-v">Barras verticales</option>
-        <option value="line">Línea</option>
-      </select>
+            <div id="dashboardControls" class="hidden">
+                <div class="controls-group">
+                    <label for="chartTypeSelector">Tipo de Gráfico</label>
+                    <select id="chartTypeSelector" onchange="updateChart()">
+                        <option value="bar">Barras Verticales</option>
+                        <option value="horizontalBar">Barras Horizontales</option>
+                        <option value="line">Línea</option>
+                    </select>
+                </div>
 
-      <label>🧭 Eje X (categoría)</label>
-      <select id="xSelect"></select>
+                <div class="controls-group">
+                    <label for="xAxisSelector">Eje X (Columna Categórica)</label>
+                    <select id="xAxisSelector" onchange="updateChart()"></select>
+                </div>
 
-      <label>🧮 Agregación</label>
-      <select id="aggSelect">
-        <option value="sum">Suma</option>
-        <option value="avg">Promedio</option>
-        <option value="count">Conteo</option>
-        <option value="median">Mediana</option>
-        <option value="min">Mínimo</option>
-        <option value="max">Máximo</option>
-      </select>
+                <div class="controls-group">
+                    <label for="yAxisSelector">Medida Numérica</label>
+                    <select id="yAxisSelector" onchange="updateChart()"></select>
+                </div>
 
-      <label>📐 Medida (número) — (no aplica si elegís “Conteo”)</label>
-      <select id="ySelect"></select>
+                <div class="controls-group">
+                    <label for="aggregationSelector">Tipo de Agregación</label>
+                    <select id="aggregationSelector" onchange="updateChart()">
+                        <option value="sum">Suma</option>
+                        <option value="avg">Promedio</option>
+                        <option value="count">Conteo</option>
+                        <option value="min">Mínimo</option>
+                        <option value="max">Máximo</option>
+                    </select>
+                </div>
 
-      <div class="row">
-        <div>
-          <label>🔢 Top N</label>
-          <input type="number" id="topN" min="1" value="20" />
+                <div class="controls-group">
+                    <label for="topNInput">Top N</label>
+                    <input type="number" id="topNInput" value="" placeholder="Ej: 10" oninput="updateChart()">
+                </div>
+
+                <div class="controls-group">
+                    <label for="orderSelector">Orden</label>
+                    <select id="orderSelector" onchange="updateChart()">
+                        <option value="desc">Descendente</option>
+                        <option value="asc">Ascendente</option>
+                    </select>
+                </div>
+
+                <div class="controls-group">
+                    <label>Filtros Dinámicos</label>
+                    <select id="filterSelector1" onchange="loadFilterValues(1)"></select>
+                    <select id="filterValueSelector1" multiple onchange="updateChart()"></select>
+                </div>
+
+                <div class="controls-group">
+                    <select id="filterSelector2" onchange="loadFilterValues(2)"></select>
+                    <select id="filterValueSelector2" multiple onchange="updateChart()"></select>
+                </div>
+            </div>
         </div>
-        <div>
-          <label>↕️ Orden</label>
-          <select id="sortDir">
-            <option value="desc">Descendente</option>
-            <option value="asc">Ascendente</option>
-          </select>
+
+        <div class="visualizations">
+            <div id="chart-container">
+                <canvas id="myChart"></canvas>
+            </div>
+            <div class="button-group">
+                <button onclick="downloadChart()">Descargar Gráfico (PNG)</button>
+                <button onclick="downloadTable()">Descargar Datos (XLSX)</button>
+            </div>
+            <br>
+            <h3>Tabla de Datos</h3>
+            <div id="data-table-container">
+                <table id="data-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
-      </div>
-
-      <h2 style="margin-top:18px">Filtros</h2>
-      <label>Filtro 1 — columna (categórica)</label>
-      <select id="filter1Col"></select>
-      <label>Valores (Ctrl/Cmd + click para múltiples)</label>
-      <select id="filter1Vals" multiple size="6"></select>
-
-      <label style="margin-top:10px">Filtro 2 — columna (categórica)</label>
-      <select id="filter2Col"></select>
-      <label>Valores</label>
-      <select id="filter2Vals" multiple size="6"></select>
-
-      <div class="row" style="margin-top:14px">
-        <button class="btn primary" id="btnRender">Actualizar gráfico</button>
-        <button class="btn" id="btnReset">Reiniciar</button>
-      </div>
-      <p class="muted" style="margin-top:8px">Tip: X = <b>autoridad_normalizada</b> • Medida = <b>cantidad_normalizada_g_float</b> • Agregación = <b>Suma</b>.</p>
     </div>
 
+    <script>
+        let excelData = {};
+        let currentSheetData = [];
+        let myChart;
+
+        async function loadFromFile() {
+            const file = document.getElementById('fileInput').files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                parseWorkbook(workbook);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        async function loadFromUrl() {
+            const url = document.getElementById('urlInput').value;
+            if (!url) return;
+            try {
+                document.getElementById('urlInput').disabled = true;
+                document.querySelector('button[onclick="loadFromUrl()"]').disabled = true;
+                document.getElementById('fileInput').disabled = true;
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.arrayBuffer();
+                const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
+                parseWorkbook(workbook);
+            } catch (error) {
+                alert('Error al cargar la URL. Asegúrate de que sea un enlace raw de un archivo Excel válido.');
+                console.error('Error:', error);
+            } finally {
+                document.getElementById('urlInput').disabled = false;
+                document.querySelector('button[onclick="loadFromUrl()"]').disabled = false;
+                document.getElementById('fileInput').disabled = false;
+            }
+        }
+
+        function parseWorkbook(workbook) {
+            excelData = {};
+            workbook.SheetNames.forEach(sheetName => {
+                const sheet = workbook.Sheets[sheetName];
+                const sheetData = XLSX.utils.sheet_to_json(sheet, { defval: null });
+                excelData[sheetName] = sheetData;
+            });
+            
+            const sheetSelector = document.getElementById('sheetSelector');
+            sheetSelector.innerHTML = '';
+            workbook.SheetNames.forEach(sheetName => {
+                const option = document.createElement('option');
+                option.value = sheetName;
+                option.textContent = sheetName;
+                sheetSelector.appendChild(option);
+            });
+            
+            document.getElementById('sheet-control-group').classList.remove('hidden');
+            document.getElementById('dashboardControls').classList.remove('hidden');
+            onSheetChange();
+        }
+
+        function onSheetChange() {
+            const sheetName = document.getElementById('sheetSelector').value;
+            currentSheetData = excelData[sheetName];
+            if (currentSheetData.length === 0) {
+                alert('La hoja seleccionada está vacía.');
+                return;
+            }
+            populateSelectors();
+            updateChart();
+        }
+
+        function populateSelectors() {
+            const columns = Object.keys(currentSheetData[0]);
+            const categoricalCols = [];
+            const numericalCols = [];
+
+            columns.forEach(col => {
+                // Heurística simple para determinar el tipo
+                const isNumeric = currentSheetData.every(row => {
+                    const value = row[col];
+                    return value === null || !isNaN(Number(value));
+                });
+                
+                if (isNumeric) {
+                    numericalCols.push(col);
+                } else {
+                    categoricalCols.push(col);
+                }
+            });
+
+            const xAxisSelector = document.getElementById('xAxisSelector');
+            const yAxisSelector = document.getElementById('yAxisSelector');
+            const filterSelector1 = document.getElementById('filterSelector1');
+            const filterSelector2 = document.getElementById('filterSelector2');
+
+            xAxisSelector.innerHTML = '';
+            yAxisSelector.innerHTML = '';
+            filterSelector1.innerHTML = '<option value="">-- Seleccionar filtro --</option>';
+            filterSelector2.innerHTML = '<option value="">-- Seleccionar filtro --</option>';
+
+            categoricalCols.forEach(col => {
+                const option = document.createElement('option');
+                option.value = col;
+                option.textContent = col;
+                xAxisSelector.appendChild(option);
+                filterSelector1.appendChild(option.cloneNode(true));
+                filterSelector2.appendChild(option.cloneNode(true));
+            });
+
+            numericalCols.forEach(col => {
+                const option = document.createElement('option');
+                option.value = col;
+                option.textContent = col;
+                yAxisSelector.appendChild(option);
+            });
+
+            // Establecer valores predeterminados si es posible
+            if(xAxisSelector.options.length > 0) xAxisSelector.selectedIndex = 0;
+            if(yAxisSelector.options.length > 0) yAxisSelector.selectedIndex = 0;
+            
+            loadFilterValues(1);
+            loadFilterValues(2);
+        }
+
+        function loadFilterValues(filterNumber) {
+            const filterSelector = document.getElementById(`filterSelector${filterNumber}`);
+            const filterValueSelector = document.getElementById(`filterValueSelector${filterNumber}`);
+            const columnName = filterSelector.value;
+            filterValueSelector.innerHTML = '';
+
+            if (columnName) {
+                const uniqueValues = [...new Set(currentSheetData.map(row => row[columnName]).filter(v => v !== null && v !== undefined))].sort();
+                uniqueValues.forEach(value => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = value;
+                    filterValueSelector.appendChild(option);
+                });
+            }
+        }
+
+        function filterData(data) {
+            let filtered = [...data];
+            
+            // Primer filtro
+            const filterCol1 = document.getElementById('filterSelector1').value;
+            const filterVals1 = [...document.getElementById('filterValueSelector1').selectedOptions].map(o => o.value);
+            if (filterCol1 && filterVals1.length > 0) {
+                filtered = filtered.filter(row => filterVals1.includes(String(row[filterCol1])));
+            }
+            
+            // Segundo filtro
+            const filterCol2 = document.getElementById('filterSelector2').value;
+            const filterVals2 = [...document.getElementById('filterValueSelector2').selectedOptions].map(o => o.value);
+            if (filterCol2 && filterVals2.length > 0) {
+                filtered = filtered.filter(row => filterVals2.includes(String(row[filterCol2])));
+            }
+
+            return filtered;
+        }
+
+        function updateChart() {
+            if (currentSheetData.length === 0) return;
+
+            const filteredData = filterData(currentSheetData);
+
+            const xAxisCol = document.getElementById('xAxisSelector').value;
+            const yAxisCol = document.getElementById('yAxisSelector').value;
+            const aggregation = document.getElementById('aggregationSelector').value;
+            const topN = parseInt(document.getElementById('topNInput').value) || null;
+            const order = document.getElementById('orderSelector').value;
+            const chartType = document.getElementById('chartTypeSelector').value;
+
+            if (!xAxisCol || !yAxisCol) {
+                if (myChart) myChart.destroy();
+                document.getElementById('myChart').style.display = 'none';
+                return;
+            }
+
+            const aggregatedData = aggregateData(filteredData, xAxisCol, yAxisCol, aggregation);
+
+            let sortedData = Object.entries(aggregatedData).map(([key, value]) => ({ key, value }));
+            
+            sortedData.sort((a, b) => {
+                if (order === 'asc') {
+                    return a.value - b.value;
+                } else {
+                    return b.value - a.value;
+                }
+            });
+
+            if (topN) {
+                sortedData = sortedData.slice(0, topN);
+            }
+
+            const labels = sortedData.map(item => item.key);
+            const data = sortedData.map(item => item.value);
+
+            renderChart(labels, data, xAxisCol, yAxisCol, chartType);
+            renderTable(sortedData, xAxisCol, yAxisCol);
+        }
+
+        function aggregateData(data, groupByCol, valueCol, aggregationType) {
+            const result = {};
+            data.forEach(row => {
+                const groupKey = row[groupByCol];
+                const value = Number(row[valueCol]);
+
+                if (isNaN(value)) return;
+
+                if (!result[groupKey]) {
+                    result[groupKey] = {
+                        sum: 0,
+                        count: 0,
+                        min: value,
+                        max: value,
+                        values: []
+                    };
+                }
+
+                result[groupKey].sum += value;
+                result[groupKey].count += 1;
+                if (value < result[groupKey].min) result[groupKey].min = value;
+                if (value > result[groupKey].max) result[groupKey].max = value;
+                result[groupKey].values.push(value);
+            });
+
+            const finalResult = {};
+            for (const key in result) {
+                const item = result[key];
+                switch (aggregationType) {
+                    case 'sum': finalResult[key] = item.sum; break;
+                    case 'avg': finalResult[key] = item.sum / item.count; break;
+                    case 'count': finalResult[key] = item.count; break;
+                    case 'min': finalResult[key] = item.min; break;
+                    case 'max': finalResult[key] = item.max; break;
+                }
+            }
+            return finalResult;
+        }
+
+        function renderChart(labels, data, xAxisLabel, yAxisLabel, chartType) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            const isHorizontalBar = chartType === 'horizontalBar';
+            const chartConfig = {
+                type: isHorizontalBar ? 'bar' : chartType,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `${yAxisLabel}`,
+                        data: data,
+                        backgroundColor: isHorizontalBar ? 'rgba(227, 6, 19, 0.8)' : 'rgba(227, 6, 19, 0.8)',
+                        borderColor: isHorizontalBar ? 'rgba(227, 6, 19, 1)' : 'rgba(227, 6, 19, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: isHorizontalBar ? 'y' : 'x',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: isHorizontalBar ? yAxisLabel : xAxisLabel
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: isHorizontalBar ? xAxisLabel : yAxisLabel
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('es-AR').format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            myChart = new Chart(ctx, chartConfig);
+            document.getElementById('myChart').style.display = 'block';
+        }
+
+        function renderTable(data, xAxisLabel, yAxisLabel) {
+            const tableHead = document.querySelector('#data-table thead');
+            const tableBody = document.querySelector('#data-table tbody');
+            tableHead.innerHTML = `<tr><th>${xAxisLabel}</th><th>${yAxisLabel}</th></tr>`;
+            tableBody.innerHTML = '';
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${item.key}</td><td>${new Intl.NumberFormat('es-AR', { maximumFractionDigits: 2 }).format(item.value)}</td>`;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function downloadChart() {
+            if (myChart) {
+                const link = document.createElement('a');
+                link.href = myChart.toBase64Image('image/png', 1.0);
+                link.download = 'grafico.png';
+                link.click();
+            } else {
+                alert('No hay un gráfico para descargar.');
+            }
+        }
+
+        function downloadTable() {
+            const table = document.getElementById('data-table');
+            const ws = XLSX.utils.table_to_sheet(table);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Datos Filtrados");
+            XLSX.writeFile(wb, "datos_filtrados.xlsx");
+        }
+    </script>
+</body>
+</html>
