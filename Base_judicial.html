@@ -264,13 +264,16 @@
 
       const sr = payload?.document?.SearchResultList;
       const list = payload?.document?.DocumentResultList?.fallos || [];
-      const total = sr?.results ?? list.length;
+      const lim = parseInt($("#limit").value,10) || list.length;
+      const rows = list.slice(0, lim);
+      const total = sr?.result ?? sr?.results ?? list.length;
 
       const head = document.createElement("div");
       head.innerHTML = `
         <div class="toolbar">
           <span class="pill">Resultados: ${total}</span>
-        </div>`;
+        </div>
+        <p class="hint">La carátula se lee de la ficha completa de cada fallo: el listado de la API repite por error la del primer resultado.</p>`;
       container.appendChild(head);
 
       if(!list.length){
@@ -297,21 +300,23 @@
       `;
       const tbody = table.querySelector("tbody");
 
-      for(const item of list){
+      const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+      for(const item of rows){
         const c = item.content || {};
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${c.id_fallo ?? ""}</td>
-          <td>${c.fecha ?? ""}</td>
-          <td>${c.tribunal ?? ""}</td>
-          <td>${c.tipo_fallo ?? ""}</td>
-          <td>${(c.caratula && (c.caratula.sobre || "")) || ""}</td>
-          <td><button data-id="${c.id_fallo || ""}" class="secondary btn-detalle">Ver detalle</button></td>
+          <td>${esc(c.id_fallo)}</td>
+          <td>${esc(c.fecha)}</td>
+          <td>${esc(c.tribunal)}</td>
+          <td>${esc(c.tipo_fallo)}</td>
+          <td class="caratula" data-id="${esc(c.id_fallo)}"><span class="hint">cargando…</span></td>
+          <td><button data-id="${esc(c.id_fallo)}" class="secondary btn-detalle">Ver detalle</button></td>
         `;
         tbody.appendChild(tr);
       }
 
       container.appendChild(table);
+      loadCaratulas(table);
 
       // Wire buttons
       container.querySelectorAll(".btn-detalle").forEach(btn=>{
@@ -325,9 +330,31 @@
       });
     }
 
+    // La API devuelve en el listado la carátula del primer fallo repetida en todos:
+    // se completa cada fila con la carátula de su ficha completa.
+    async function loadCaratulas(table){
+      const cells = [...table.querySelectorAll("td.caratula")];
+      let i = 0;
+      async function worker(){
+        while(i < cells.length){
+          const td = cells[i++];
+          const id = td.getAttribute("data-id");
+          try{
+            const res = await fetch(API_BASE + "/jurisprudencia/fallos/fulldocument?id=" + encodeURIComponent(id), { headers: headers() });
+            if(!res.ok) throw new Error("HTTP " + res.status);
+            const j = await res.json();
+            const car = j?.document?.content?.caratula || {};
+            td.textContent = car.sobre || [car.actor, car.demandado].filter(Boolean).join(" c/ ") || "(sin carátula)";
+          }catch(err){
+            td.textContent = "No se pudo leer (" + err.message + ")";
+          }
+        }
+      }
+      await Promise.all(Array.from({length: 6}, worker));
+    }
+
     // Search
     $("#searchBtn").addEventListener("click", async ()=>{
-      if(!token){ setStatus($("#resultStatus"), "Primero autenticá para obtener un token.", false); return; }
       setStatus($("#resultStatus"), "Buscando…", null);
       try{
         const qs = buildParams();
@@ -351,7 +378,6 @@
 
     // By ID
     async function fetchById(id, openDetails){
-      if(!token){ setStatus($("#byIdBox"), "Primero autenticá para obtener un token.", false); return; }
       try{
         const url = API_BASE + "/jurisprudencia/fallos/fulldocument?id=" + encodeURIComponent(id);
         const res = await fetch(url, { headers: headers() });

@@ -609,6 +609,21 @@
             }
         }
 
+        // Carga automática del Excel del repo (el mismo que usan los mapas)
+        const DEFAULT_XLSX = 'xls/DF_clave_clorinda_al_dia_normalizado_revisado.xlsx';
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch(DEFAULT_XLSX);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const wb = XLSX.read(new Uint8Array(await res.arrayBuffer()), { type: 'array' });
+                parseWorkbook(wb);
+                const u = document.getElementById('urlInput');
+                if (u) u.placeholder = 'Cargado: ' + DEFAULT_XLSX.split('/').pop();
+            } catch (e) {
+                console.warn('No se pudo cargar el Excel por defecto:', e);
+            }
+        });
+
         function downloadTable() {
             const table = document.getElementById('data-table');
             const ws = XLSX.utils.table_to_sheet(table);
