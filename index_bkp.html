@@ -7,7 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <style>
     :root{
-      --clarin-red:#E10000;
+      --accent-red:#E10000;
       --ink:#111827; --ink-inv:#ffffff;
     }
     *{box-sizing:border-box}
@@ -16,7 +16,6 @@
       font:16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
       color:var(--ink-inv);
       background:#000;
-      background-image:url('https://www.clarin.com/img/2025/07/23/ppysLASu9_1256x620__1.jpg');
       background-size:cover; background-position:center; background-repeat:no-repeat;
     }
     .backdrop{position:fixed; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.75));}
@@ -33,7 +32,7 @@
     .cta{display:inline-flex; align-items:center; gap:8px; margin-top:10px; font-weight:700; color:#fff}
     .cta svg{width:18px; height:18px}
     .footer{margin-top:22px; font-size:12px; opacity:.8; display:flex; gap:12px; align-items:center}
-    .clarin{color:var(--clarin-red)}
+    .accent{color:var(--accent-red)}
     #u-line{display:block; height:4px; border-radius:999px; background:rgba(255,255,255,.35)}
     details.tests{margin-top:18px}
     .pass{color:#22c55e}
@@ -59,7 +58,7 @@
     .btn{
       display:inline-flex; gap:8px; align-items:center; justify-content:center;
       padding:10px 14px; border-radius:12px; font-weight:700; cursor:pointer;
-      border:1px solid rgba(255,255,255,.25); background:var(--clarin-red); color:#fff; width:100%;
+      border:1px solid rgba(255,255,255,.25); background:var(--accent-red); color:#fff; width:100%;
     }
     .muted{opacity:.8; font-size:12px; margin-top:8px}
     .error{color:#ffb4b4; font-size:13px; min-height:1.2em}
@@ -71,7 +70,7 @@
   <div class="backdrop"></div>
   <div class="wrap">
     <header>
-      <h1>Visualizaciones Formosa <span class="clarin">(D3)</span></h1>
+      <h1>Visualizaciones Formosa <span class="accent">(D3)</span></h1>
       <p class="sub">Infografías y mapas interactivos.</p>
       <div id="u-line"></div>
     </header>

@@ -7,7 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <style>
     :root{
-      --clarin-red:#E10000;
+      --accent-red:#E10000;
       --ink:#111827; --ink-inv:#ffffff;
     }
     *{box-sizing:border-box}
@@ -16,7 +16,6 @@
       font:16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
       color:var(--ink-inv);
       background:#000;
-      background-image:url('https://www.clarin.com/img/2025/07/23/ppysLASu9_1256x620__1.jpg');
       background-size:cover; background-position:center; background-repeat:no-repeat;
     }
     .backdrop{position:fixed; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.75));}
@@ -33,7 +32,7 @@
     .cta{display:inline-flex; align-items:center; gap:8px; margin-top:10px; font-weight:700; color:#fff}
     .cta svg{width:18px; height:18px}
     .footer{margin-top:22px; font-size:12px; opacity:.8; display:flex; gap:12px; align-items:center}
-    .clarin{color:var(--clarin-red)}
+    .accent{color:var(--accent-red)}
     #u-line{display:block; height:4px; border-radius:999px; background:rgba(255,255,255,.35)}
     details.tests{margin-top:18px}
     .pass{color:#22c55e}
@@ -45,7 +44,7 @@
     .row{display:flex; flex-direction:column; gap:8px; margin:10px 0}
     label{font-size:13px; opacity:.9}
     input[type="text"], input[type="password"]{width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.08); color:#fff; outline:none;}
-    .btn{display:inline-flex; gap:8px; align-items:center; justify-content:center; padding:10px 14px; border-radius:12px; font-weight:700; cursor:pointer; border:1px solid rgba(255,255,255,.25); background:var(--clarin-red); color:#fff; width:100%;}
+    .btn{display:inline-flex; gap:8px; align-items:center; justify-content:center; padding:10px 14px; border-radius:12px; font-weight:700; cursor:pointer; border:1px solid rgba(255,255,255,.25); background:var(--accent-red); color:#fff; width:100%;}
     .muted{opacity:.8; font-size:12px; margin-top:8px}
     .error{color:#ffb4b4; font-size:13px; min-height:1.2em}
     .hidden{display:none}
@@ -56,7 +55,7 @@
   <div class="backdrop"></div>
   <div class="wrap">
     <header>
-      <h1>Narcotráfico en Formosa <span class="clarin">(D3)</span></h1>
+      <h1>Narcotráfico en Formosa <span class="accent">(D3)</span></h1>
       <p class="sub">Todo lo que necesitas saber, en datos y en imagen.</p>
       <div id="u-line"></div>
     </header>
@@ -128,8 +127,8 @@
     const items = [
       { title: 'Mapa — Drogas incautadas', file: 'drogas_incautadas_clorinda.html', blurb: 'Con desglose por sustancia y hallazgo.' },
       { title: 'Mapa — Fuerzas e incautaciones', file: 'mapa_fuerzas_incautaciones.html', blurb: 'Dónde, qué fuerza intervino y lo que incautó.' },
-      { title: 'Videoteca — Narcotráfico y poder en Formosa', file: 'videoteca_estilo_clarin_narcotrafico_y_poder_en_formosa_html.html', blurb: 'Tres videos periodísticos contundentes sobre narcotráfico y poder en Formosa.' },
-      { title: 'Wordcloud — Análisis de palabras', file: 'clarin_wordcloud', blurb: 'Palabras más mencionadas de los entrevistados.' },      
+      { title: 'Videoteca — Narcotráfico y poder en Formosa', file: 'videoteca_narcotrafico_y_poder_en_formosa.html', blurb: 'Tres videos periodísticos contundentes sobre narcotráfico y poder en Formosa.' },
+      { title: 'Wordcloud — Análisis de palabras', file: 'wordcloud.html', blurb: 'Palabras más mencionadas de los entrevistados.' },      
       { title: 'Infografía — Detenidos', file: 'visualizacion_aprehendidos_d_3_formosa.html', blurb: 'Gráfico con evolución entre 2015 a 2024.' },
       { title: 'Infografía — Cocaína', file: 'visualizacion_cocaina_d_3_formosa.html', blurb: 'Incautaciones: tendencia y variación interanual.' },
       { title: 'Infografía — Marihuana', file: 'visualizacion_marihuana_d_3_formosa.html', blurb: 'Incautaciones: evolución y picos relevantes.' },
